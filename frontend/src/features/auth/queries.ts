@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { login, logout, me, type LoginRequest } from "./api";
+import { login, logout, me, register, type LoginRequest, type RegisterRequest } from "./api";
 
 export function useMe() {
   return useQuery({
@@ -26,5 +26,11 @@ export function useLogoutMutation() {
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: ["me"] });
     },
+  });
+}
+
+export function useRegisterMutation() {
+  return useMutation({
+    mutationFn: (body: RegisterRequest) => register(body),
   });
 }

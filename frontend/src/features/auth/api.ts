@@ -6,7 +6,17 @@ export interface LoginRequest {
 }
 
 export interface MeResponse {
-  username: string;
+  id: string;
+  role: string;
+}
+
+export interface RegisterRequest {
+  id: string;
+  password: string;
+  name: string;
+  phone: string;
+  gaName: string;
+  email: string;
 }
 
 export function login(body: LoginRequest): Promise<MeResponse> {
@@ -22,4 +32,11 @@ export function logout(): Promise<void> {
 
 export function me(): Promise<MeResponse> {
   return apiFetch<MeResponse>("/api/auth/me");
+}
+
+export function register(body: RegisterRequest): Promise<void> {
+  return apiFetch<void>("/api/auth/register", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
 }
