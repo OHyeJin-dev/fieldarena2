@@ -41,14 +41,16 @@ public class SecurityConfig {
             csrf ->
                 csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                     .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-                    .ignoringRequestMatchers("/api/auth/login"))
+                    .ignoringRequestMatchers("/api/auth/login", "/api/auth/register"))
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
         .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers(
-                        "/api/auth/login", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+                        "/api/auth/login", "/api/auth/register",
+                        "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
                     .permitAll()
+                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
                     .anyRequest()
                     .authenticated())
         .formLogin(form -> form.disable())
