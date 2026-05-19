@@ -2,11 +2,14 @@ package com.agentsupport.auth;
 
 import com.agentsupport.auth.dto.LoginRequest;
 import com.agentsupport.auth.dto.MeResponse;
+import com.agentsupport.user.entity.User;
+import com.agentsupport.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,11 +18,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth")
 @RestController
@@ -27,16 +26,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
   private final AuthenticationManager authenticationManager;
+  private final UserService userService;
   private final HttpSessionSecurityContextRepository securityContextRepository =
       new HttpSessionSecurityContextRepository();
 
-  public AuthController(AuthenticationManager authenticationManager) {
+  public AuthController(AuthenticationManager authenticationManager, UserService userService) {
     this.authenticationManager = authenticationManager;
+    this.userService = userService;
   }
 
   @Operation(summary = "로그인")
   @PostMapping("/login")
-  public ResponseEntity<MeResponse> login(
+  public ResponseEntity<?> login(
       @Valid @RequestBody LoginRequest request,
       HttpServletRequest httpRequest,
       HttpServletResponse httpResponse) {
@@ -44,11 +45,20 @@ public class AuthController {
       Authentication auth =
           authenticationManager.authenticate(
               new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+
+      User user = userService.findById(auth.getName());
+      if ("PENDING".equals(user.getStatus())) {
+        return ResponseEntity.status(401).body(Map.of("code", "PENDING_APPROVAL"));
+      }
+      if ("REJECTED".equals(user.getStatus())) {
+        return ResponseEntity.status(401).body(Map.of("code", "ACCOUNT_REJECTED"));
+      }
+
       SecurityContext context = SecurityContextHolder.createEmptyContext();
       context.setAuthentication(auth);
       SecurityContextHolder.setContext(context);
       securityContextRepository.saveContext(context, httpRequest, httpResponse);
-      return ResponseEntity.ok(new MeResponse(auth.getName()));
+      return ResponseEntity.ok(new MeResponse(auth.getName(), user.getRole()));
     } catch (AuthenticationException e) {
       return ResponseEntity.status(401).build();
     }
@@ -58,9 +68,7 @@ public class AuthController {
   @PostMapping("/logout")
   public ResponseEntity<Void> logout(HttpServletRequest request) {
     var session = request.getSession(false);
-    if (session != null) {
-      session.invalidate();
-    }
+    if (session != null) session.invalidate();
     SecurityContextHolder.clearContext();
     return ResponseEntity.ok().build();
   }
@@ -71,6 +79,7 @@ public class AuthController {
     if (auth == null || !auth.isAuthenticated()) {
       return ResponseEntity.status(401).build();
     }
-    return ResponseEntity.ok(new MeResponse(auth.getName()));
+    User user = userService.findById(auth.getName());
+    return ResponseEntity.ok(new MeResponse(auth.getName(), user.getRole()));
   }
 }

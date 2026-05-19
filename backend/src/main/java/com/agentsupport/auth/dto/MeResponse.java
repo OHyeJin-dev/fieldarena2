@@ -1,3 +1,3 @@
 package com.agentsupport.auth.dto;
 
-public record MeResponse(String username) {}
+public record MeResponse(String id, String role) {}
