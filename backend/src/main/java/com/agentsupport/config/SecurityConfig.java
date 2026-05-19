@@ -34,12 +34,22 @@ public class SecurityConfig {
   @Value("${CORS_ALLOWED_ORIGINS:http://localhost:3000}")
   private String allowedOrigins;
 
+  @Value("${server.servlet.session.cookie.secure:false}")
+  private boolean cookieSecure;
+
+  @Value("${server.servlet.session.cookie.same-site:Lax}")
+  private String cookieSameSite;
+
   @Bean
   SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    CookieCsrfTokenRepository csrfRepo = CookieCsrfTokenRepository.withHttpOnlyFalse();
+    csrfRepo.setCookieCustomizer(
+        cookie -> cookie.secure(cookieSecure).sameSite(cookieSameSite));
+
     http.cors(cors -> cors.configurationSource(corsSource()))
         .csrf(
             csrf ->
-                csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                csrf.csrfTokenRepository(csrfRepo)
                     .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
                     .ignoringRequestMatchers("/api/auth/login", "/api/auth/register"))
         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
