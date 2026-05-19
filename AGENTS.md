@@ -49,7 +49,7 @@
 - 컴포넌트 패턴: **shadcn/ui 스타일** (소유권 우선, 의존성 최소)
 
 **백엔드**
-- 프레임워크: **Spring Boot 4.x**
+- 프레임워크: **Spring Boot 3.5.x**
 - JVM: **Java 21 LTS / Eclipse Temurin**
 - DB: **PostgreSQL** (Supabase)
 - 세션 저장소: **Spring Session JDBC** (Postgres의 `SPRING_SESSION` 테이블)
