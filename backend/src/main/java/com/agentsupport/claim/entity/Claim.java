@@ -19,6 +19,9 @@ public class Claim {
   @Column(name = "agent_id", nullable = false, length = 50)
   private String agentId;
 
+  @Column(name = "customer_id")
+  private UUID customerId;
+
   @Column(name = "policy_number", nullable = false, length = 20)
   private String policyNumber;
 
@@ -50,8 +53,26 @@ public class Claim {
 
   protected Claim() {}
 
+  public static Claim create(
+      String agentId, UUID customerId, String policyNumber, String customerName,
+      String insurerName, String claimType, BigDecimal claimAmount,
+      String status, LocalDate claimDate) {
+    Claim c = new Claim();
+    c.agentId = agentId;
+    c.customerId = customerId;
+    c.policyNumber = policyNumber;
+    c.customerName = customerName;
+    c.insurerName = insurerName;
+    c.claimType = claimType;
+    c.claimAmount = claimAmount;
+    c.status = status;
+    c.claimDate = claimDate;
+    return c;
+  }
+
   public UUID getId() { return id; }
   public String getAgentId() { return agentId; }
+  public UUID getCustomerId() { return customerId; }
   public String getPolicyNumber() { return policyNumber; }
   public String getCustomerName() { return customerName; }
   public String getInsurerName() { return insurerName; }
