@@ -16,7 +16,10 @@ const schema = z.object({
   birthDate: z.string().min(1, "생년월일을 입력하세요"),
   productName: z.string().min(1, "상품명을 입력하세요"),
   insurerName: z.string().min(1, "보험사를 입력하세요"),
-  monthlyPremium: z.coerce.number().positive("보험료를 입력하세요"),
+  monthlyPremium: z
+    .string()
+    .min(1, "보험료를 입력하세요")
+    .refine((v) => !isNaN(Number(v)) && Number(v) > 0, "올바른 금액을 입력하세요"),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -42,7 +45,7 @@ export function ProposalFormModal({ onClose }: Props) {
         birthDate: values.birthDate,
         productName: values.productName,
         insurerName: values.insurerName,
-        monthlyPremium: values.monthlyPremium,
+        monthlyPremium: Number(values.monthlyPremium),
       },
       { onSuccess: onClose },
     );
