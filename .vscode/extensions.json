@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "vscjava.vscode-java-pack",
+    "vmware.vscode-boot-dev-pack",
+    "ms-azuretools.vscode-docker",
+    "yzhang.markdown-all-in-one",
+    "bierner.markdown-mermaid",
+    "redhat.vscode-yaml",
+    "EditorConfig.EditorConfig"
+  ]
+}

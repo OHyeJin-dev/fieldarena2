@@ -1,0 +1,3 @@
+ALTER TABLE proposals ALTER COLUMN customer_name TYPE TEXT;
+ALTER TABLE proposals ADD COLUMN IF NOT EXISTS phone_number TEXT;
+ALTER TABLE proposals ADD COLUMN IF NOT EXISTS birth_date TEXT;

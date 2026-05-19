@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: agentsupport-backend
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=${DB_SSL_MODE}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+
+server:
+  servlet:
+    session:
+      cookie:
+        name: ${SESSION_COOKIE_NAME:AGENT_SESSION}
+        http-only: true
+  error:
+    include-message: always
+    include-binding-errors: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+pii:
+  encryption-key: ${PII_ENCRYPTION_KEY:QWdlbnRTdXBwb3J0X2Rldl9waWlfa2V5XzIwMjYhISE=}
+

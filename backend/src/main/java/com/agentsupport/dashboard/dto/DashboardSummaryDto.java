@@ -1,0 +1,11 @@
+package com.agentsupport.dashboard.dto;
+
+import com.agentsupport.proposal.dto.ProposalDto;
+import java.util.List;
+
+public record DashboardSummaryDto(
+    long activeProposals,
+    long underwritingPending,
+    long claimsInProgress,
+    long monthlyProposals,
+    List<ProposalDto> recentProposals) {}

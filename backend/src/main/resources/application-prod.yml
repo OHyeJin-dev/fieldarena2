@@ -1,0 +1,16 @@
+server:
+  servlet:
+    session:
+      cookie:
+        secure: true
+        same-site: none
+
+spring:
+  session:
+    jdbc:
+      initialize-schema: never
+
+logging:
+  level:
+    root: WARN
+    com.agentsupport: INFO

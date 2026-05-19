@@ -1,0 +1,102 @@
+{
+  // Editor
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.rulers": [100],
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.trimFinalNewlines": true,
+
+  // 검색·탐색 시 무시
+  "files.exclude": {
+    "**/.gradle": true,
+    "**/build": true,
+    "**/.next": true,
+    "**/node_modules": false
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/.gradle": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/docs/generated/**": true,
+    "**/frontend/src/api/**": true
+  },
+
+  // TypeScript / JavaScript
+  "typescript.tsdk": "frontend/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // ESLint
+  "eslint.workingDirectories": [
+    { "directory": "frontend", "changeProcessCWD": true }
+  ],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+  // Tailwind CSS
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+
+  // Java / Spring Boot
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
+  "java.format.settings.profile": "GoogleStyle",
+  "java.saveActions.organizeImports": true,
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java",
+    "editor.tabSize": 4
+  },
+
+  // Markdown
+  "[markdown]": {
+    "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+    "editor.wordWrap": "on"
+  },
+  "markdown.preview.breaks": true,
+
+  // YAML
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.tabSize": 2
+  },
+
+  // 한국어 입력 시 자주 깨지는 문자 보호
+  "files.encoding": "utf8",
+  "files.autoGuessEncoding": false,
+
+  // generated 파일은 읽기 전용으로 시각적 구분
+  "files.readonlyInclude": {
+    "docs/generated/**": true,
+    "frontend/src/api/**": true
+  }
+}

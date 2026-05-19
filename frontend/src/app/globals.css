@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Fonts ────────────────────────────────────────────── */
+  --font-sans: "Pretendard Variable", system-ui, sans-serif;
+
+  /* ── Brand (M3 Primary) ───────────────────────────────── */
+  --color-primary: #002045;
+  --color-primary-container: #1a365d;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #86a0cd;
+  --color-primary-fixed: #d6e3ff;
+  --color-primary-fixed-dim: #adc7f7;
+  --color-inverse-primary: #adc7f7;
+
+  /* ── Surface ──────────────────────────────────────────── */
+  --color-surface: #f9f9f9;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f3f4;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-high: #e8e8e8;
+  --color-surface-container-highest: #e2e2e2;
+  --color-surface-variant: #e2e2e2;
+  --color-on-surface: #1a1c1c;
+  --color-on-surface-variant: #43474e;
+  --color-outline: #74777f;
+  --color-outline-variant: #c4c6cf;
+
+  /* ── Status ───────────────────────────────────────────── */
+  --color-status-info: #1a365d;
+  --color-status-info-container: #e0eaf7;
+  --color-status-warning: #c2410c;
+  --color-status-warning-container: #fed7aa;
+  --color-status-success: #15803d;
+  --color-status-success-container: #dcfce7;
+  --color-status-error: #ba1a1a;
+  --color-status-error-container: #ffdad6;
+
+  /* ── Layout constants ─────────────────────────────────── */
+  /* Spacing scale (DESIGN.md §3): xs=4 base=8 sm=12 md=24 lg=40 xl=64 gutter=24 */
+  /* 위 값들은 @theme 밖에 선언 — --spacing-{name} 은 Tailwind v4에서 max-w-{name} 을 오버라이드함 */
+  --width-container-max: 1200px;
+  --width-sidebar: 256px;
+  --width-sidebar-collapsed: 80px;
+  --height-topbar: 64px;
+
+  /* ── Border radius ────────────────────────────────────── */
+  --radius: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ──────────────────────────────────────────── */
+  --shadow-card: 0 4px 20px rgba(26, 54, 93, 0.08);
+  --shadow-card-hover: 0 10px 30px rgba(26, 54, 93, 0.12);
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+}
+
+.growth-progress {
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  border: none;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.growth-progress::-webkit-progress-bar {
+  background: rgb(255 255 255 / 0.2);
+  border-radius: 9999px;
+}
+
+.growth-progress::-webkit-progress-value {
+  background: var(--color-inverse-primary);
+  border-radius: 9999px;
+  transition: width 500ms ease;
+}
+
+.growth-progress::-moz-progress-bar {
+  background: var(--color-inverse-primary);
+  border-radius: 9999px;
+  transition: width 500ms ease;
+}

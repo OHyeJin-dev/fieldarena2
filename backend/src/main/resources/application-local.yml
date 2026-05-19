@@ -1,0 +1,12 @@
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false
+        same-site: lax
+
+logging:
+  level:
+    com.agentsupport: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.session: DEBUG

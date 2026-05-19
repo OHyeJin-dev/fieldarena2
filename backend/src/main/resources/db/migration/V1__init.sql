@@ -1,0 +1,2 @@
+-- V1: initial schema placeholder
+-- Domain tables will be added in subsequent migrations.
