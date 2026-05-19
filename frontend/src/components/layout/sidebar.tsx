@@ -9,6 +9,7 @@ import {
   FileSearch,
   LayoutDashboard,
   Receipt,
+  Settings,
   X,
 } from "lucide-react";
 
@@ -17,16 +18,19 @@ interface NavItem {
   href: string;
   icon: React.ComponentType<{ size?: number; className?: string }>;
   disabled?: boolean;
+  roles: string[];
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "대시보드", href: "/dashboard", icon: LayoutDashboard },
-  { label: "설계 관리", href: "/proposals", icon: ClipboardList },
-  { label: "심사 현황", href: "/underwriting", icon: FileSearch },
-  { label: "청구 관리", href: "/claims", icon: Receipt },
+  { label: "대시보드", href: "/dashboard", icon: LayoutDashboard, roles: ["ADMIN", "AGENT1", "AGENT2"] },
+  { label: "설계 관리", href: "/proposals", icon: ClipboardList, roles: ["ADMIN", "AGENT1"] },
+  { label: "심사 현황", href: "/underwriting", icon: FileSearch, roles: ["ADMIN", "AGENT1"] },
+  { label: "청구 관리", href: "/claims", icon: Receipt, roles: ["ADMIN", "AGENT1", "AGENT2"] },
+  { label: "가입 관리", href: "/admin/users", icon: Settings, roles: ["ADMIN"] },
 ];
 
 interface SidebarProps {
+  role: string;
   desktopCollapsed: boolean;
   mobileDrawerOpen: boolean;
   onDesktopToggle: () => void;
@@ -34,30 +38,28 @@ interface SidebarProps {
 }
 
 export function Sidebar({
+  role,
   desktopCollapsed,
   mobileDrawerOpen,
   onDesktopToggle,
   onMobileClose,
 }: SidebarProps) {
   const pathname = usePathname();
+  const visibleItems = NAV_ITEMS.filter((item) => item.roles.includes(role));
 
   return (
     <aside
       className={[
         "flex flex-col bg-primary-container overflow-hidden",
-        // 모바일: fixed drawer
         "fixed inset-y-0 left-0 z-50 w-[256px]",
         "transition-transform duration-200",
         mobileDrawerOpen ? "translate-x-0" : "-translate-x-full",
-        // 데스크탑: static, translate 초기화, 너비 토글
         "lg:static lg:z-auto lg:translate-x-0",
         "lg:transition-[width] lg:duration-200",
         desktopCollapsed ? "lg:w-[80px]" : "lg:w-[256px]",
       ].join(" ")}
     >
-      {/* 헤더 */}
       <div className="flex items-center h-16 px-4 border-b border-white/10 gap-2 shrink-0">
-        {/* 모바일: X 버튼 */}
         <button
           type="button"
           onClick={onMobileClose}
@@ -67,7 +69,6 @@ export function Sidebar({
           <X size={20} />
         </button>
 
-        {/* 로고 텍스트 (데스크탑 펼침 또는 모바일) */}
         {(!desktopCollapsed || mobileDrawerOpen) && (
           <span className="flex-1 text-on-primary font-bold text-base tracking-tight truncate hidden lg:block">
             AgentSupport
@@ -77,7 +78,6 @@ export function Sidebar({
           AgentSupport
         </span>
 
-        {/* 데스크탑: 접힘/펼침 버튼 */}
         <button
           type="button"
           onClick={onDesktopToggle}
@@ -87,17 +87,12 @@ export function Sidebar({
           ].join(" ")}
           aria-label={desktopCollapsed ? "사이드바 펼치기" : "사이드바 접기"}
         >
-          {desktopCollapsed ? (
-            <ChevronRight size={20} />
-          ) : (
-            <ChevronLeft size={20} />
-          )}
+          {desktopCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </button>
       </div>
 
-      {/* 네비게이션 */}
       <nav className="flex flex-col gap-1 p-2 flex-1">
-        {NAV_ITEMS.map((item) => {
+        {visibleItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
           const collapsed = desktopCollapsed && !mobileDrawerOpen;

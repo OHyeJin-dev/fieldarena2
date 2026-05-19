@@ -5,11 +5,12 @@ import { Sidebar } from "./sidebar";
 import { TopBar } from "./top-bar";
 
 interface AppShellProps {
-  username: string;
+  userId: string;
+  role: string;
   children: React.ReactNode;
 }
 
-export function AppShell({ username, children }: AppShellProps) {
+export function AppShell({ userId, role, children }: AppShellProps) {
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
@@ -23,7 +24,6 @@ export function AppShell({ username, children }: AppShellProps) {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* 모바일 오버레이 */}
       {mobileDrawerOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -32,6 +32,7 @@ export function AppShell({ username, children }: AppShellProps) {
       )}
 
       <Sidebar
+        role={role}
         desktopCollapsed={desktopCollapsed}
         mobileDrawerOpen={mobileDrawerOpen}
         onDesktopToggle={() => setDesktopCollapsed((c) => !c)}
@@ -39,7 +40,7 @@ export function AppShell({ username, children }: AppShellProps) {
       />
 
       <div className="flex flex-col flex-1 overflow-hidden min-w-0">
-        <TopBar username={username} onMenuClick={handleMenuClick} />
+        <TopBar username={userId} onMenuClick={handleMenuClick} />
         <main className="flex-1 overflow-auto bg-surface">{children}</main>
       </div>
     </div>
