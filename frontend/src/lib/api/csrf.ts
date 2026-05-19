@@ -28,10 +28,7 @@ export async function apiFetch<T>(
     headers.set("Content-Type", "application/json");
   }
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}${input}`,
-    { ...init, headers, credentials: "include" },
-  );
+  const res = await fetch(input, { ...init, headers, credentials: "include" });
 
   if (!res.ok) {
     const body = await res.json().catch(() => null);
