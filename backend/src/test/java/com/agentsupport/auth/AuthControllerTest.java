@@ -21,43 +21,39 @@ import org.springframework.web.context.WebApplicationContext;
 class AuthControllerTest {
 
   @Autowired WebApplicationContext webApplicationContext;
-
   MockMvc mockMvc;
 
   @BeforeEach
   void setUp() {
-    mockMvc =
-        MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
+    mockMvc = MockMvcBuilders
+        .webAppContextSetup(webApplicationContext)
+        .apply(springSecurity())
+        .build();
   }
 
   @Test
-  void login_success_returns200_with_username() throws Exception {
-    mockMvc
-        .perform(
-            post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"agent01\",\"password\":\"password\"}"))
+  void login_success_returns200_with_id() throws Exception {
+    mockMvc.perform(post("/api/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"username\":\"admin\",\"password\":\"Admin1234!\"}"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.username").value("agent01"));
+        .andExpect(jsonPath("$.id").value("admin"))
+        .andExpect(jsonPath("$.role").value("ADMIN"));
   }
 
   @Test
   void login_wrong_password_returns401() throws Exception {
-    mockMvc
-        .perform(
-            post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"agent01\",\"password\":\"wrong\"}"))
+    mockMvc.perform(post("/api/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"username\":\"admin\",\"password\":\"wrong\"}"))
         .andExpect(status().isUnauthorized());
   }
 
   @Test
   void login_blank_fields_returns400() throws Exception {
-    mockMvc
-        .perform(
-            post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"\",\"password\":\"\"}"))
+    mockMvc.perform(post("/api/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"username\":\"\",\"password\":\"\"}"))
         .andExpect(status().isBadRequest());
   }
 
@@ -67,20 +63,16 @@ class AuthControllerTest {
   }
 
   @Test
-  void me_with_valid_session_returns_username() throws Exception {
-    MvcResult loginResult =
-        mockMvc
-            .perform(
-                post("/api/auth/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\"username\":\"agent01\",\"password\":\"password\"}"))
-            .andReturn();
+  void me_with_valid_session_returns_id() throws Exception {
+    MvcResult loginResult = mockMvc.perform(post("/api/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"username\":\"admin\",\"password\":\"Admin1234!\"}"))
+        .andReturn();
 
     MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
 
-    mockMvc
-        .perform(get("/api/auth/me").session(session))
+    mockMvc.perform(get("/api/auth/me").session(session))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.username").value("agent01"));
+        .andExpect(jsonPath("$.id").value("admin"));
   }
 }
