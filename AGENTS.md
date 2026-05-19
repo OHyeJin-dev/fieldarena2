@@ -49,8 +49,8 @@
 - 컴포넌트 패턴: **shadcn/ui 스타일** (소유권 우선, 의존성 최소)
 
 **백엔드**
-- 프레임워크: **Spring Boot 3.x**
-- JVM: **Java 21 LTS / OpenJDK** ([결정 필요] 벤더 — Temurin / Corretto / Liberica)
+- 프레임워크: **Spring Boot 4.x**
+- JVM: **Java 21 LTS / Eclipse Temurin**
 - DB: **PostgreSQL** (Supabase)
 - 세션 저장소: **Spring Session JDBC** (Postgres의 `SPRING_SESSION` 테이블)
 - API 문서: **springdoc-openapi** (소스로부터 OpenAPI spec 생성)
@@ -60,9 +60,7 @@
 
 | # | 항목 | 후보 | 비고 |
 |---|---|---|---|
-| 1 | OpenJDK 벤더 | Temurin / Corretto / Liberica | 셋 중 어느 것이든 무방. CI 일관성만 확보. |
-| 2 | ORM | JPA(Hibernate) / MyBatis / jOOQ | 한국 금융권은 MyBatis 비중 높음. 컴플라이언스팀이 raw SQL 가시성 요구 가능. |
-| 3 | 본인인증 SDK | KMC / NICE / KCB / 통합 | MVP 단계에서는 placeholder. 출시 직전 결정. |
+| 1 | 본인인증 SDK | KMC / NICE / KCB / 통합 | MVP 단계에서는 placeholder. 출시 직전 결정. |
 
 → 결정 후 본 섹션 갱신. 근거는 `ARCHITECTURE.md` 의사결정 로그.
 
