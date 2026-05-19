@@ -1,9 +1,12 @@
 package com.agentsupport.claim;
 
+import com.agentsupport.claim.dto.ClaimCreateRequest;
 import com.agentsupport.claim.dto.ClaimDto;
 import com.agentsupport.claim.service.ClaimService;
 import com.agentsupport.common.dto.PageResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,5 +28,11 @@ public class ClaimController {
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "20") int size) {
     return claimService.findClaims(auth.getName(), status, page, size);
+  }
+
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public ClaimDto create(Authentication auth, @Valid @RequestBody ClaimCreateRequest req) {
+    return claimService.create(auth.getName(), req);
   }
 }
