@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Plus } from "lucide-react";
 import { useClaims } from "@/features/claims/queries";
+import { ClaimFormModal } from "@/features/claims/ClaimFormModal";
 
 const STATUS_OPTIONS = ["전체", "접수", "심사 중", "추가 서류 요청", "지급 완료", "부지급"] as const;
 
@@ -21,6 +23,7 @@ function formatAmount(value: number | null): string {
 export default function ClaimsPage() {
   const [status, setStatus] = useState("");
   const [page, setPage] = useState(0);
+  const [showModal, setShowModal] = useState(false);
 
   const { data, isLoading, isError } = useClaims({
     page,
@@ -35,7 +38,16 @@ export default function ClaimsPage() {
 
   return (
     <div className="p-6 max-w-300 mx-auto">
-      <h1 className="text-2xl font-bold text-on-surface mb-6">청구 관리</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-on-surface">청구 관리</h1>
+        <button
+          type="button"
+          onClick={() => setShowModal(true)}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-container text-on-primary-container text-sm font-semibold hover:opacity-90 transition-opacity"
+        >
+          <Plus size={16} /> 청구 등록
+        </button>
+      </div>
 
       <div className="mb-4">
         <select
@@ -146,6 +158,8 @@ export default function ClaimsPage() {
           </div>
         )}
       </div>
+
+      {showModal && <ClaimFormModal onClose={() => setShowModal(false)} />}
     </div>
   );
 }
