@@ -2,7 +2,7 @@ spring:
   application:
     name: agentsupport-backend
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=${DB_SSL_MODE}
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=${DB_SSL_MODE}&prepareThreshold=0
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     hikari:
