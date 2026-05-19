@@ -23,8 +23,7 @@
 
 ```sql
 CREATE TABLE users (
-  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  username   VARCHAR(50)  NOT NULL UNIQUE,
+  id         VARCHAR(50)  PRIMARY KEY,
   password   VARCHAR(255) NOT NULL,
   name       VARCHAR(500) NOT NULL,
   phone      VARCHAR(500) NOT NULL,
@@ -37,6 +36,7 @@ CREATE TABLE users (
 );
 ```
 
+- `id` — 사용자가 직접 입력하는 로그인 ID. PK이므로 중복 불가.
 - `name`, `phone`, `email` — AES/GCM 암호화 저장 (`PiiAttributeConverter` 사용). 암호문이 원문보다 길어 VARCHAR(500).
 - `email_hash` — 평문 이메일의 SHA-256 hex. DB UNIQUE 제약으로 중복 방지. 애플리케이션에서 검색/중복 확인 시 hash로 비교.
 - `ga_name` — 암호화 불필요 (조직명, PII 아님).
@@ -46,8 +46,9 @@ CREATE TABLE users (
 ### Flyway V11: 초기 ADMIN seed
 
 ```sql
-INSERT INTO users (username, password, name, phone, ga_name, email, role, status)
-VALUES ('admin', '{bcrypt_hash}', '관리자', '000-0000-0000', '-', 'admin@example.com', 'ADMIN', 'ACTIVE');
+INSERT INTO users (id, password, name, phone, ga_name, email, email_hash, role, status)
+VALUES ('admin', '{bcrypt_hash}', '관리자', '000-0000-0000', '-', 'admin@example.com',
+        encode(sha256('admin@example.com'), 'hex'), 'ADMIN', 'ACTIVE');
 ```
 
 실제 해시값은 BCrypt로 생성해서 넣는다.
@@ -81,10 +82,10 @@ Spring Security가 `users` 테이블에서 사용자를 조회해 인증한다.
 ### MeResponse 변경
 
 ```json
-{ "username": "agent01", "role": "AGENT1" }
+{ "id": "agent01", "role": "AGENT1" }
 ```
 
-`role` 필드 추가. 프론트엔드 메뉴 제어에 사용.
+`id`(로그인 ID) + `role` 반환. 프론트엔드 메뉴 제어에 사용.
 
 ### PII 암호화 처리
 
