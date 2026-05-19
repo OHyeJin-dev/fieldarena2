@@ -39,7 +39,7 @@
 - ⚠️ Vercel과 Render는 서로 다른 eTLD+1 → cross-origin cookie 이슈. 운영 진입 전 커스텀 도메인 확보 필수 (`tech-debt-tracker.md`).
 
 **프론트엔드**
-- 프레임워크: **Next.js (App Router)**
+- 프레임워크: **Next.js 15.x (App Router)**
 - 언어: **TypeScript 5.x** (`strict: true`, `noUncheckedIndexedAccess: true`)
 - 스타일링: **Tailwind CSS** (토큰은 `docs/DESIGN.md` 단일 출처)
 - 폰트: **Pretendard** (한글) + **Hanken Grotesk** (Latin)
