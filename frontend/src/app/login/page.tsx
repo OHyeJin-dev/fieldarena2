@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock, User } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -38,6 +39,15 @@ export default function LoginPage() {
       onSuccess: () => router.push("/dashboard"),
       onError: (err) => {
         if (err instanceof ApiError && err.status === 401) {
+          const code = (err.body as { code?: string } | null)?.code;
+          if (code === "PENDING_APPROVAL") {
+            router.push("/pending");
+            return;
+          }
+          if (code === "ACCOUNT_REJECTED") {
+            setServerError("가입이 거절된 계정입니다. 관리자에게 문의해주세요");
+            return;
+          }
           setServerError("아이디 또는 비밀번호가 일치하지 않습니다");
         } else {
           setServerError("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요");
@@ -202,7 +212,7 @@ export default function LoginPage() {
           {/* 하단 링크 */}
           <footer className="mt-8 text-center flex flex-col gap-2">
             <div className="flex items-center justify-center gap-5 text-sm text-on-surface-variant">
-              <a href="#" className="hover:text-primary transition-colors">회원가입</a>
+              <Link href="/register" className="hover:text-primary transition-colors">회원가입</Link>
               <span className="w-1 h-1 bg-outline-variant rounded-full inline-block" />
               <a href="#" className="hover:text-primary transition-colors">이용약관</a>
               <span className="w-1 h-1 bg-outline-variant rounded-full inline-block" />
