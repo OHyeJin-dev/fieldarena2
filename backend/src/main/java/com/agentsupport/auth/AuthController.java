@@ -12,6 +12,8 @@ import jakarta.validation.Valid;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -47,18 +49,15 @@ public class AuthController {
               new UsernamePasswordAuthenticationToken(request.username(), request.password()));
 
       User user = userService.findById(auth.getName());
-      if ("PENDING".equals(user.getStatus())) {
-        return ResponseEntity.status(401).body(Map.of("code", "PENDING_APPROVAL"));
-      }
-      if ("REJECTED".equals(user.getStatus())) {
-        return ResponseEntity.status(401).body(Map.of("code", "ACCOUNT_REJECTED"));
-      }
-
       SecurityContext context = SecurityContextHolder.createEmptyContext();
       context.setAuthentication(auth);
       SecurityContextHolder.setContext(context);
       securityContextRepository.saveContext(context, httpRequest, httpResponse);
       return ResponseEntity.ok(new MeResponse(auth.getName(), user.getRole()));
+    } catch (DisabledException e) {
+      return ResponseEntity.status(401).body(Map.of("code", "PENDING_APPROVAL"));
+    } catch (LockedException e) {
+      return ResponseEntity.status(401).body(Map.of("code", "ACCOUNT_REJECTED"));
     } catch (AuthenticationException e) {
       return ResponseEntity.status(401).build();
     }

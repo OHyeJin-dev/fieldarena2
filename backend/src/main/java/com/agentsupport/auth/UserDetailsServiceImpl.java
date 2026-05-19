@@ -20,11 +20,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     User user = userRepository.findById(username)
         .orElseThrow(() -> new UsernameNotFoundException(username));
-    String role = user.getRole() != null ? user.getRole() : "PENDING";
+    String role = user.getRole() != null ? user.getRole() : "NONE";
+    boolean active = "ACTIVE".equals(user.getStatus());
+    boolean rejected = "REJECTED".equals(user.getStatus());
     return org.springframework.security.core.userdetails.User.builder()
         .username(user.getId())
         .password(user.getPassword())
         .roles(role)
+        .disabled(!active)
+        .accountLocked(rejected)
         .build();
   }
 }
