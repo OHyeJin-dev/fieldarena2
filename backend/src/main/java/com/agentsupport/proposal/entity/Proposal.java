@@ -1,17 +1,15 @@
 package com.agentsupport.proposal.entity;
 
+import com.agentsupport.common.BaseAuditEntity;
 import com.agentsupport.security.PiiAttributeConverter;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "proposals")
-public class Proposal {
+public class Proposal extends BaseAuditEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -46,14 +44,6 @@ public class Proposal {
 
   @Column(name = "proposed_date", nullable = false)
   private LocalDate proposedDate;
-
-  @CreationTimestamp
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private LocalDateTime createdAt;
-
-  @UpdateTimestamp
-  @Column(name = "updated_at", nullable = false)
-  private LocalDateTime updatedAt;
 
   protected Proposal() {}
 

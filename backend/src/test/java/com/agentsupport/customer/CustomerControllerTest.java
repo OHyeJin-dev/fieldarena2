@@ -82,6 +82,23 @@ class CustomerControllerTest {
   }
 
   @Test
+  void agent2_creates_customer_sets_audit_fields() throws Exception {
+    mockMvc.perform(post("/api/customers")
+            .session(agent2Session)
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(createBody("감사대상고객")))
+        .andExpect(status().isCreated());
+
+    MvcResult listResult = mockMvc.perform(get("/api/customers").session(agent2Session))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content[0].name").value("감사대상고객"))
+        .andReturn();
+    org.junit.jupiter.api.Assertions.assertTrue(
+        listResult.getResponse().getContentAsString().contains("감사대상고객"));
+  }
+
+  @Test
   void agent1_lists_only_own_customers() throws Exception {
     mockMvc.perform(post("/api/customers")
             .session(agent1Session)
