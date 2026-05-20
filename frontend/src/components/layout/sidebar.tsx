@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   Receipt,
   Settings,
+  Users,
   X,
 } from "lucide-react";
 
@@ -25,6 +26,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "대시보드", href: "/dashboard", icon: LayoutDashboard, roles: ["ADMIN", "AGENT1", "AGENT2"] },
   { label: "설계 관리", href: "/proposals", icon: ClipboardList, roles: ["ADMIN", "AGENT1"] },
   { label: "심사 현황", href: "/underwriting", icon: FileSearch, roles: ["ADMIN", "AGENT1"] },
+  { label: "고객 관리", href: "/customers", icon: Users, roles: ["ADMIN", "AGENT1", "AGENT2"] },
   { label: "청구 관리", href: "/claims", icon: Receipt, roles: ["ADMIN", "AGENT1", "AGENT2"] },
   { label: "가입 관리", href: "/admin/users", icon: Settings, roles: ["ADMIN"] },
 ];

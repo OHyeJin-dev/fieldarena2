@@ -1,5 +1,6 @@
 package com.agentsupport.admin;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -60,6 +61,7 @@ class AdminUserControllerTest {
 
     mockMvc.perform(patch("/api/admin/users/newagent/approve")
             .session(adminSession)
+            .with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content("{\"role\":\"AGENT1\"}"))
         .andExpect(status().isOk());
@@ -80,7 +82,8 @@ class AdminUserControllerTest {
         .andExpect(status().isCreated());
 
     mockMvc.perform(patch("/api/admin/users/rejectme/reject")
-            .session(adminSession))
+            .session(adminSession)
+            .with(csrf()))
         .andExpect(status().isOk());
   }
 }

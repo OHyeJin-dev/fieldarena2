@@ -26,3 +26,19 @@ export function fetchClaims(query: ClaimQuery = {}): Promise<PageResponse<ClaimD
   const qs = params.toString();
   return apiFetch<PageResponse<ClaimDto>>(`/api/claims${qs ? `?${qs}` : ""}`);
 }
+
+export interface ClaimCreateRequest {
+  customerId: string;
+  policyNumber: string;
+  insurerName: string;
+  claimType: string;
+  claimAmount: number | null;
+  claimDate: string;
+}
+
+export function createClaim(req: ClaimCreateRequest): Promise<ClaimDto> {
+  return apiFetch<ClaimDto>("/api/claims", {
+    method: "POST",
+    body: JSON.stringify(req),
+  });
+}

@@ -9,46 +9,23 @@ import {
   Plus,
   Receipt,
   TrendingUp,
+  Users,
 } from "lucide-react";
 import { useDashboardSummary } from "@/features/dashboard/queries";
+import { useMe } from "@/features/auth/queries";
 import { ProposalFormModal } from "@/features/proposals/ProposalFormModal";
 
 const MONTHLY_TARGET = 10;
 
-const TABS = ["공지사항", "최근 설계", "일정"] as const;
-type Tab = (typeof TABS)[number];
+const TABS_DEFAULT = ["공지사항", "최근 설계", "일정"] as const;
+const TABS_AGENT2 = ["공지사항", "일정"] as const;
 
 const NOTICES = [
-  {
-    id: 1,
-    title: "실손보험 청구 서류 제출 기준 변경 안내",
-    date: "2026-05-15",
-    isNew: true,
-  },
-  {
-    id: 2,
-    title: "5월 GA 월례 교육 일정 공지",
-    date: "2026-05-10",
-    isNew: true,
-  },
-  {
-    id: 3,
-    title: "암보험 심사 기준 강화 안내 (DB손보, 삼성생명)",
-    date: "2026-05-02",
-    isNew: false,
-  },
-  {
-    id: 4,
-    title: "2026년 상반기 수수료 정산 일정 및 기준 업데이트",
-    date: "2026-04-25",
-    isNew: false,
-  },
-  {
-    id: 5,
-    title: "변액보험 판매 자격 갱신 대상자 안내",
-    date: "2026-04-18",
-    isNew: false,
-  },
+  { id: 1, title: "실손보험 청구 서류 제출 기준 변경 안내", date: "2026-05-15", isNew: true },
+  { id: 2, title: "5월 GA 월례 교육 일정 공지", date: "2026-05-10", isNew: true },
+  { id: 3, title: "암보험 심사 기준 강화 안내 (DB손보, 삼성생명)", date: "2026-05-02", isNew: false },
+  { id: 4, title: "2026년 상반기 수수료 정산 일정 및 기준 업데이트", date: "2026-04-25", isNew: false },
+  { id: 5, title: "변액보험 판매 자격 갱신 대상자 안내", date: "2026-04-18", isNew: false },
 ];
 
 const SCHEDULE_TYPE_CLASS: Record<string, string> = {
@@ -75,13 +52,18 @@ const PROPOSAL_STATUS_CLASS: Record<string, string> = {
 
 export default function DashboardPage() {
   const { data, isLoading } = useDashboardSummary();
-  const [activeTab, setActiveTab] = useState<Tab>("공지사항");
+  const { data: me } = useMe();
+  const isAgent2 = me?.role === "AGENT2";
+  const tabs: readonly string[] = isAgent2 ? TABS_AGENT2 : TABS_DEFAULT;
+  const [activeTab, setActiveTab] = useState<string>("공지사항");
   const [showModal, setShowModal] = useState(false);
 
   const activeProposals = data?.activeProposals ?? 0;
   const underwritingPending = data?.underwritingPending ?? 0;
   const claimsInProgress = data?.claimsInProgress ?? 0;
   const monthlyProposals = data?.monthlyProposals ?? 0;
+  const myCustomers = data?.myCustomers ?? 0;
+  const monthlyClaims = data?.monthlyClaims ?? 0;
   const progressPct = Math.min(100, Math.round((monthlyProposals / MONTHLY_TARGET) * 100));
 
   return (
@@ -90,91 +72,129 @@ export default function DashboardPage() {
 
       {/* 요약 카드 3개 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-surface-container-lowest rounded-2xl shadow-card p-6 flex items-start justify-between border-l-4 border-status-info">
-          <div className="min-w-0">
-            <p className="text-sm text-on-surface-variant mb-1">진행 중인 설계</p>
-            {isLoading ? (
-              <div className="h-9 w-20 bg-surface-container rounded animate-pulse mt-1" />
-            ) : (
-              <p className="text-3xl font-bold text-on-surface leading-tight">
-                {activeProposals}
-                <span className="text-base font-normal ml-1 text-on-surface-variant">건</span>
-              </p>
-            )}
-            <p className="text-xs text-on-surface-variant mt-1.5">작성 중 + 설계 완료</p>
-          </div>
-          <div className="w-11 h-11 rounded-full bg-status-info-container flex items-center justify-center shrink-0 ml-4">
-            <ClipboardList size={20} className="text-status-info" />
-          </div>
-        </div>
-
-        <div className="bg-surface-container-lowest rounded-2xl shadow-card p-6 flex items-start justify-between border-l-4 border-status-warning">
-          <div className="min-w-0">
-            <p className="text-sm text-on-surface-variant mb-1">심사 대기 건수</p>
-            {isLoading ? (
-              <div className="h-9 w-20 bg-surface-container rounded animate-pulse mt-1" />
-            ) : (
-              <p className="text-3xl font-bold text-on-surface leading-tight">
-                {underwritingPending}
-                <span className="text-base font-normal ml-1 text-on-surface-variant">건</span>
-              </p>
-            )}
-            <p className="text-xs text-on-surface-variant mt-1.5">심사 중 + 서류 보완</p>
-          </div>
-          <div className="w-11 h-11 rounded-full bg-status-warning-container flex items-center justify-center shrink-0 ml-4">
-            <FileSearch size={20} className="text-status-warning" />
-          </div>
-        </div>
-
-        <div className="bg-surface-container-lowest rounded-2xl shadow-card p-6 flex items-start justify-between border-l-4 border-status-error">
-          <div className="min-w-0">
-            <p className="text-sm text-on-surface-variant mb-1">청구 처리 중</p>
-            {isLoading ? (
-              <div className="h-9 w-20 bg-surface-container rounded animate-pulse mt-1" />
-            ) : (
-              <p className="text-3xl font-bold text-on-surface leading-tight">
-                {claimsInProgress}
-                <span className="text-base font-normal ml-1 text-on-surface-variant">건</span>
-              </p>
-            )}
-            <p className="text-xs text-on-surface-variant mt-1.5">접수 + 심사 중</p>
-          </div>
-          <div className="w-11 h-11 rounded-full bg-status-error-container flex items-center justify-center shrink-0 ml-4">
-            <AlertCircle size={20} className="text-status-error" />
-          </div>
-        </div>
+        {isAgent2 ? (
+          <>
+            <SummaryCard
+              label="본인 고객"
+              value={myCustomers}
+              unit="명"
+              caption="등록한 고객"
+              Icon={Users}
+              iconClass="bg-status-info-container text-status-info"
+              borderClass="border-status-info"
+              isLoading={isLoading}
+            />
+            <SummaryCard
+              label="청구 처리 중"
+              value={claimsInProgress}
+              unit="건"
+              caption="접수 + 심사 중"
+              Icon={AlertCircle}
+              iconClass="bg-status-error-container text-status-error"
+              borderClass="border-status-error"
+              isLoading={isLoading}
+            />
+            <SummaryCard
+              label="이번 달 청구 등록"
+              value={monthlyClaims}
+              unit="건"
+              caption="이번 달 등록"
+              Icon={Receipt}
+              iconClass="bg-status-success-container text-status-success"
+              borderClass="border-status-success"
+              isLoading={isLoading}
+            />
+          </>
+        ) : (
+          <>
+            <SummaryCard
+              label="진행 중인 설계"
+              value={activeProposals}
+              unit="건"
+              caption="작성 중 + 설계 완료"
+              Icon={ClipboardList}
+              iconClass="bg-status-info-container text-status-info"
+              borderClass="border-status-info"
+              isLoading={isLoading}
+            />
+            <SummaryCard
+              label="심사 대기 건수"
+              value={underwritingPending}
+              unit="건"
+              caption="심사 중 + 서류 보완"
+              Icon={FileSearch}
+              iconClass="bg-status-warning-container text-status-warning"
+              borderClass="border-status-warning"
+              isLoading={isLoading}
+            />
+            <SummaryCard
+              label="청구 처리 중"
+              value={claimsInProgress}
+              unit="건"
+              caption="접수 + 심사 중"
+              Icon={AlertCircle}
+              iconClass="bg-status-error-container text-status-error"
+              borderClass="border-status-error"
+              isLoading={isLoading}
+            />
+          </>
+        )}
       </div>
 
       {/* 2단 레이아웃 */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* 왼쪽: 빠른 작업 + 업무 현황 */}
         <div className="lg:col-span-7 flex flex-col gap-6">
           {/* 빠른 작업 */}
           <div className="bg-surface-container-lowest rounded-2xl shadow-card p-6">
             <h2 className="text-base font-semibold text-on-surface mb-4">빠른 작업</h2>
             <div className="grid grid-cols-3 gap-3">
-              <button
-                type="button"
-                onClick={() => setShowModal(true)}
-                className="flex flex-col items-center justify-center gap-1.5 px-3 py-4 rounded-xl bg-primary-container text-on-primary-container text-xs font-medium hover:opacity-90 transition-opacity"
-              >
-                <Plus size={18} />
-                새 설계 작성
-              </button>
-              <Link
-                href="/underwriting"
-                className="flex flex-col items-center justify-center gap-1.5 px-3 py-4 rounded-xl border border-outline-variant text-on-surface text-xs font-medium hover:bg-surface-container-low transition-colors"
-              >
-                <FileSearch size={18} />
-                심사 현황
-              </Link>
-              <Link
-                href="/claims"
-                className="flex flex-col items-center justify-center gap-1.5 px-3 py-4 rounded-xl border border-outline-variant text-on-surface text-xs font-medium hover:bg-surface-container-low transition-colors"
-              >
-                <Receipt size={18} />
-                청구 관리
-              </Link>
+              {isAgent2 ? (
+                <>
+                  <Link
+                    href="/customers"
+                    className="flex flex-col items-center justify-center gap-1.5 px-3 py-4 rounded-xl bg-primary-container text-on-primary-container text-xs font-medium hover:opacity-90 transition-opacity"
+                  >
+                    <Plus size={18} /> 새 고객 등록
+                  </Link>
+                  <Link
+                    href="/claims"
+                    className="flex flex-col items-center justify-center gap-1.5 px-3 py-4 rounded-xl border border-outline-variant text-on-surface text-xs font-medium hover:bg-surface-container-low transition-colors"
+                  >
+                    <Plus size={18} /> 청구 등록
+                  </Link>
+                  <Link
+                    href="/claims"
+                    className="flex flex-col items-center justify-center gap-1.5 px-3 py-4 rounded-xl border border-outline-variant text-on-surface text-xs font-medium hover:bg-surface-container-low transition-colors"
+                  >
+                    <Receipt size={18} /> 청구 관리
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(true)}
+                    className="flex flex-col items-center justify-center gap-1.5 px-3 py-4 rounded-xl bg-primary-container text-on-primary-container text-xs font-medium hover:opacity-90 transition-opacity"
+                  >
+                    <Plus size={18} />
+                    새 설계 작성
+                  </button>
+                  <Link
+                    href="/underwriting"
+                    className="flex flex-col items-center justify-center gap-1.5 px-3 py-4 rounded-xl border border-outline-variant text-on-surface text-xs font-medium hover:bg-surface-container-low transition-colors"
+                  >
+                    <FileSearch size={18} />
+                    심사 현황
+                  </Link>
+                  <Link
+                    href="/claims"
+                    className="flex flex-col items-center justify-center gap-1.5 px-3 py-4 rounded-xl border border-outline-variant text-on-surface text-xs font-medium hover:bg-surface-container-low transition-colors"
+                  >
+                    <Receipt size={18} />
+                    청구 관리
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -182,29 +202,40 @@ export default function DashboardPage() {
           <div className="bg-surface-container-lowest rounded-2xl shadow-card p-6">
             <h2 className="text-base font-semibold text-on-surface mb-4">업무 현황</h2>
             <div className="flex flex-col">
-              {[
-                {
-                  label: "설계 진행 중",
-                  value: activeProposals,
-                  iconClass: "bg-status-info-container text-status-info",
-                  badgeClass: "bg-status-info-container text-status-info",
-                  Icon: ClipboardList,
-                },
-                {
-                  label: "심사 대기",
-                  value: underwritingPending,
-                  iconClass: "bg-status-warning-container text-status-warning",
-                  badgeClass: "bg-status-warning-container text-status-warning",
-                  Icon: FileSearch,
-                },
-                {
-                  label: "청구 처리 중",
-                  value: claimsInProgress,
-                  iconClass: "bg-status-error-container text-status-error",
-                  badgeClass: "bg-status-error-container text-status-error",
-                  Icon: AlertCircle,
-                },
-              ].map(({ label, value, iconClass, badgeClass, Icon }) => (
+              {(isAgent2
+                ? [
+                    {
+                      label: "청구 처리 중",
+                      value: claimsInProgress,
+                      iconClass: "bg-status-error-container text-status-error",
+                      badgeClass: "bg-status-error-container text-status-error",
+                      Icon: AlertCircle,
+                    },
+                  ]
+                : [
+                    {
+                      label: "설계 진행 중",
+                      value: activeProposals,
+                      iconClass: "bg-status-info-container text-status-info",
+                      badgeClass: "bg-status-info-container text-status-info",
+                      Icon: ClipboardList,
+                    },
+                    {
+                      label: "심사 대기",
+                      value: underwritingPending,
+                      iconClass: "bg-status-warning-container text-status-warning",
+                      badgeClass: "bg-status-warning-container text-status-warning",
+                      Icon: FileSearch,
+                    },
+                    {
+                      label: "청구 처리 중",
+                      value: claimsInProgress,
+                      iconClass: "bg-status-error-container text-status-error",
+                      badgeClass: "bg-status-error-container text-status-error",
+                      Icon: AlertCircle,
+                    },
+                  ]
+              ).map(({ label, value, iconClass, badgeClass, Icon }) => (
                 <div
                   key={label}
                   className="flex items-center justify-between py-3 border-b border-outline-variant last:border-0"
@@ -230,12 +261,11 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* 오른쪽: 탭 패널 (공지사항 / 최근 설계 / 일정) */}
+        {/* 오른쪽: 탭 패널 */}
         <div className="lg:col-span-5">
           <div className="bg-surface-container-lowest rounded-2xl shadow-card overflow-hidden h-full flex flex-col">
-            {/* 탭 바 */}
             <div className="flex border-b border-outline-variant shrink-0">
-              {TABS.map((tab) => (
+              {tabs.map((tab) => (
                 <button
                   key={tab}
                   type="button"
@@ -252,10 +282,7 @@ export default function DashboardPage() {
               ))}
             </div>
 
-            {/* 탭 콘텐츠 */}
             <div className="flex-1 overflow-y-auto p-5">
-
-              {/* 공지사항 */}
               {activeTab === "공지사항" && (
                 <div className="flex flex-col">
                   {NOTICES.map((n, i) => (
@@ -267,9 +294,7 @@ export default function DashboardPage() {
                       ].join(" ")}
                     >
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-on-surface leading-snug line-clamp-2">
-                          {n.title}
-                        </p>
+                        <p className="text-sm text-on-surface leading-snug line-clamp-2">{n.title}</p>
                         <p className="text-xs text-on-surface-variant mt-1">{n.date}</p>
                       </div>
                       {n.isNew && (
@@ -282,8 +307,7 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              {/* 최근 설계 */}
-              {activeTab === "최근 설계" && (
+              {activeTab === "최근 설계" && !isAgent2 && (
                 <div className="flex flex-col gap-1">
                   {isLoading &&
                     Array.from({ length: 5 }).map((_, i) => (
@@ -325,7 +349,6 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              {/* 일정 */}
               {activeTab === "일정" && (
                 <div className="flex flex-col">
                   {SCHEDULES.map((s, i) => (
@@ -360,7 +383,6 @@ export default function DashboardPage() {
                   ))}
                 </div>
               )}
-
             </div>
           </div>
         </div>
@@ -368,34 +390,73 @@ export default function DashboardPage() {
 
       {showModal && <ProposalFormModal onClose={() => setShowModal(false)} />}
 
-      {/* 이번 달 설계 작성 현황 */}
-      <div className="bg-primary-container rounded-2xl p-6">
-        <div className="flex items-center gap-2 mb-3">
-          <TrendingUp size={20} className="text-on-primary-container" />
-          <h2 className="text-base font-semibold text-on-primary-container">
-            이번 달 설계 작성 현황
-          </h2>
+      {/* 이번 달 설계 작성 현황 — AGENT2는 숨김 */}
+      {!isAgent2 && (
+        <div className="bg-primary-container rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <TrendingUp size={20} className="text-on-primary-container" />
+            <h2 className="text-base font-semibold text-on-primary-container">
+              이번 달 설계 작성 현황
+            </h2>
+          </div>
+          <div className="flex items-end justify-between mb-3">
+            {isLoading ? (
+              <div className="h-7 w-36 bg-white/20 rounded animate-pulse" />
+            ) : (
+              <p className="text-on-primary-container">
+                <span className="text-2xl font-bold">{monthlyProposals}</span>
+                <span className="text-sm ml-1 text-on-primary-container">
+                  / 목표 {MONTHLY_TARGET}건
+                </span>
+              </p>
+            )}
+            <span className="text-sm font-semibold text-on-primary-container">
+              {isLoading ? "…" : `${progressPct}%`}
+            </span>
+          </div>
+          <progress
+            className="growth-progress"
+            max={MONTHLY_TARGET}
+            value={isLoading ? 0 : monthlyProposals}
+          />
         </div>
-        <div className="flex items-end justify-between mb-3">
-          {isLoading ? (
-            <div className="h-7 w-36 bg-white/20 rounded animate-pulse" />
-          ) : (
-            <p className="text-on-primary-container">
-              <span className="text-2xl font-bold">{monthlyProposals}</span>
-              <span className="text-sm ml-1 text-on-primary-container">
-                / 목표 {MONTHLY_TARGET}건
-              </span>
-            </p>
-          )}
-          <span className="text-sm font-semibold text-on-primary-container">
-            {isLoading ? "…" : `${progressPct}%`}
-          </span>
-        </div>
-        <progress
-          className="growth-progress"
-          max={MONTHLY_TARGET}
-          value={isLoading ? 0 : monthlyProposals}
-        />
+      )}
+    </div>
+  );
+}
+
+interface SummaryCardProps {
+  label: string;
+  value: number;
+  unit: string;
+  caption: string;
+  Icon: React.ComponentType<{ size?: number; className?: string }>;
+  iconClass: string;
+  borderClass: string;
+  isLoading: boolean;
+}
+
+function SummaryCard({
+  label, value, unit, caption, Icon, iconClass, borderClass, isLoading,
+}: SummaryCardProps) {
+  return (
+    <div
+      className={`bg-surface-container-lowest rounded-2xl shadow-card p-6 flex items-start justify-between border-l-4 ${borderClass}`}
+    >
+      <div className="min-w-0">
+        <p className="text-sm text-on-surface-variant mb-1">{label}</p>
+        {isLoading ? (
+          <div className="h-9 w-20 bg-surface-container rounded animate-pulse mt-1" />
+        ) : (
+          <p className="text-3xl font-bold text-on-surface leading-tight">
+            {value}
+            <span className="text-base font-normal ml-1 text-on-surface-variant">{unit}</span>
+          </p>
+        )}
+        <p className="text-xs text-on-surface-variant mt-1.5">{caption}</p>
+      </div>
+      <div className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 ml-4 ${iconClass}`}>
+        <Icon size={20} />
       </div>
     </div>
   );

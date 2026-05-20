@@ -29,4 +29,15 @@ public interface ClaimRepository extends JpaRepository<Claim, UUID> {
         AND c.status IN ('접수', '심사 중')
       """)
   long countInProgressByAgentId(@Param("agentId") String agentId);
+
+  @Query(
+      """
+      SELECT COUNT(c) FROM Claim c
+      WHERE c.agentId = :agentId
+        AND c.claimDate BETWEEN :from AND :to
+      """)
+  long countByAgentIdAndClaimDateBetween(
+      @Param("agentId") String agentId,
+      @Param("from") java.time.LocalDate from,
+      @Param("to") java.time.LocalDate to);
 }

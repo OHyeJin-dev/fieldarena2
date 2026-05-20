@@ -1,6 +1,7 @@
 package com.agentsupport.dashboard.service;
 
 import com.agentsupport.claim.repository.ClaimRepository;
+import com.agentsupport.customer.repository.CustomerRepository;
 import com.agentsupport.dashboard.dto.DashboardSummaryDto;
 import com.agentsupport.policy.repository.PolicyRepository;
 import com.agentsupport.proposal.dto.ProposalDto;
@@ -17,14 +18,17 @@ public class DashboardService {
   private final PolicyRepository policyRepository;
   private final ProposalRepository proposalRepository;
   private final ClaimRepository claimRepository;
+  private final CustomerRepository customerRepository;
 
   public DashboardService(
       PolicyRepository policyRepository,
       ProposalRepository proposalRepository,
-      ClaimRepository claimRepository) {
+      ClaimRepository claimRepository,
+      CustomerRepository customerRepository) {
     this.policyRepository = policyRepository;
     this.proposalRepository = proposalRepository;
     this.claimRepository = claimRepository;
+    this.customerRepository = customerRepository;
   }
 
   public DashboardSummaryDto getSummary(String agentId) {
@@ -36,6 +40,9 @@ public class DashboardService {
     long claimsInProgress = claimRepository.countInProgressByAgentId(agentId);
     long monthlyProposals =
         proposalRepository.countByAgentIdAndProposedDateBetween(agentId, firstOfMonth, today);
+    long myCustomers = customerRepository.countByAgentId(agentId);
+    long monthlyClaims =
+        claimRepository.countByAgentIdAndClaimDateBetween(agentId, firstOfMonth, today);
 
     List<ProposalDto> recentProposals =
         proposalRepository.findTop5ByAgentIdOrderByProposedDateDesc(agentId).stream()
@@ -43,6 +50,7 @@ public class DashboardService {
             .toList();
 
     return new DashboardSummaryDto(
-        activeProposals, underwritingPending, claimsInProgress, monthlyProposals, recentProposals);
+        activeProposals, underwritingPending, claimsInProgress, monthlyProposals,
+        myCustomers, monthlyClaims, recentProposals);
   }
 }

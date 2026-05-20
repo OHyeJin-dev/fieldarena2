@@ -6,6 +6,8 @@ export interface DashboardSummaryDto {
   underwritingPending: number;
   claimsInProgress: number;
   monthlyProposals: number;
+  myCustomers: number;
+  monthlyClaims: number;
   recentProposals: ProposalDto[];
 }
 

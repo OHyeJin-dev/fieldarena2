@@ -8,4 +8,6 @@ public record DashboardSummaryDto(
     long underwritingPending,
     long claimsInProgress,
     long monthlyProposals,
+    long myCustomers,
+    long monthlyClaims,
     List<ProposalDto> recentProposals) {}
