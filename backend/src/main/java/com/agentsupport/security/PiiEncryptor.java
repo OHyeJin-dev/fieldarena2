@@ -8,9 +8,11 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
+@Lazy(false)
 public class PiiEncryptor {
 
   private static volatile PiiEncryptor INSTANCE;
