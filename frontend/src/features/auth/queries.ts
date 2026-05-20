@@ -1,13 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { login, logout, me, register, type LoginRequest, type RegisterRequest } from "./api";
-
-export function useMe() {
-  return useQuery({
-    queryKey: ["me"],
-    queryFn: me,
-    retry: false,
-  });
-}
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { login, logout, register, type LoginRequest, type RegisterRequest } from "./api";
 
 export function useLoginMutation() {
   const queryClient = useQueryClient();

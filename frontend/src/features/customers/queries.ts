@@ -1,19 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createCustomer,
   deleteCustomer,
-  fetchCustomers,
   updateCustomer,
-  type CustomerQuery,
   type CustomerWriteRequest,
 } from "./api";
-
-export function useCustomers(query: CustomerQuery = {}) {
-  return useQuery({
-    queryKey: ["customers", query],
-    queryFn: () => fetchCustomers(query),
-  });
-}
 
 export function useCreateCustomer() {
   const qc = useQueryClient();

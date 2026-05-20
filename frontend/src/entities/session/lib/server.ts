@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import type { MeResponse } from "./api";
+import type { MeResponse } from "../api";
 
 export async function getMe(): Promise<MeResponse | null> {
   const cookieStore = await cookies();

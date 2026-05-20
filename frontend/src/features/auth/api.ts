@@ -1,13 +1,9 @@
 import { apiFetch } from "@/shared/api";
+import type { MeResponse } from "@/entities/session";
 
 export interface LoginRequest {
   username: string;
   password: string;
-}
-
-export interface MeResponse {
-  id: string;
-  role: string;
 }
 
 export interface RegisterRequest {
@@ -28,10 +24,6 @@ export function login(body: LoginRequest): Promise<MeResponse> {
 
 export function logout(): Promise<void> {
   return apiFetch<void>("/api/auth/logout", { method: "POST" });
-}
-
-export function me(): Promise<MeResponse> {
-  return apiFetch<MeResponse>("/api/auth/me");
 }
 
 export function register(body: RegisterRequest): Promise<void> {

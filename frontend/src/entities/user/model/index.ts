@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { approveUser, listUsers, rejectUser } from "./api";
+import { approveUser, listUsers, rejectUser } from "../api";
 
 export function useUsers(status?: string) {
   return useQuery({

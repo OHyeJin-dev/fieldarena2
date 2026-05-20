@@ -1,12 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createClaim, fetchClaims, type ClaimCreateRequest, type ClaimQuery } from "./api";
-
-export function useClaims(query: ClaimQuery = {}) {
-  return useQuery({
-    queryKey: ["claims", query],
-    queryFn: () => fetchClaims(query),
-  });
-}
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createClaim, type ClaimCreateRequest } from "./api";
 
 export function useCreateClaim() {
   const qc = useQueryClient();

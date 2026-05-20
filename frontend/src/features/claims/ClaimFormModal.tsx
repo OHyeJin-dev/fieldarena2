@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/shared/ui/button";
 import { TextField } from "@/shared/ui/text-field";
-import { useCustomers } from "@/features/customers/queries";
+import { useCustomers } from "@/entities/customer";
 import { useCreateClaim } from "./queries";
 
 const schema = z.object({

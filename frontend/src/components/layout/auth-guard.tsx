@@ -1,6 +1,6 @@
 "use client";
 
-import { useMe } from "@/features/auth/queries";
+import { useMe } from "@/entities/session";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AppShell } from "./app-shell";
