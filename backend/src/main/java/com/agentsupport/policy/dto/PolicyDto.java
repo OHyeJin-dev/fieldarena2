@@ -8,6 +8,7 @@ import java.util.UUID;
 public record PolicyDto(
     UUID id,
     String policyNumber,
+    UUID customerId,
     String customerName,
     String productName,
     String insurerName,
@@ -19,6 +20,7 @@ public record PolicyDto(
     return new PolicyDto(
         p.getId(),
         p.getPolicyNumber(),
+        p.getCustomerId(),
         p.getCustomerName(),
         p.getProductName(),
         p.getInsurerName(),
