@@ -7,6 +7,7 @@
 > **로컬 dev도 클라우드 DB를 사용**해서 Docker 불요. 별도 Redis 없이 Spring Session JDBC로 Postgres에 세션 저장.
 
 자세한 규칙·아키텍처·작업 흐름:
+- **신규 개발자 onboarding / FSD 가이드**: [`CONTRIBUTING.md`](./CONTRIBUTING.md)
 - **LLM 작업 진입점**: [`AGENTS.md`](./AGENTS.md)
 - **시스템 구조**: [`ARCHITECTURE.md`](./ARCHITECTURE.md)
 - **디자인 토큰**: [`docs/DESIGN.md`](./docs/DESIGN.md)
