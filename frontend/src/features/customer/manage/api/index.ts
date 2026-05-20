@@ -1,6 +1,5 @@
 import { apiFetch } from "@/shared/api";
 import type { CustomerDto } from "@/entities/customer";
-export type { CustomerDto };
 
 export interface CustomerWriteRequest {
   name: string;
@@ -24,8 +23,4 @@ export function updateCustomer(id: string, req: CustomerWriteRequest): Promise<C
     method: "PUT",
     body: JSON.stringify(req),
   });
-}
-
-export function deleteCustomer(id: string): Promise<void> {
-  return apiFetch<void>(`/api/customers/${id}`, { method: "DELETE" });
 }

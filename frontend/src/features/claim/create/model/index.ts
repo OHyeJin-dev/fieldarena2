@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createClaim, type ClaimCreateRequest } from "./api";
+import { createClaim, type ClaimCreateRequest } from "../api";
 
 export function useCreateClaim() {
   const qc = useQueryClient();

@@ -1,6 +1,5 @@
 import { apiFetch } from "@/shared/api";
 import type { ProposalDto } from "@/entities/proposal";
-export type { ProposalDto };
 
 export interface ProposalCreateRequest {
   customerName: string;

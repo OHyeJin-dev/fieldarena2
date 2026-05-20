@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useLoginMutation } from "@/features/auth/queries";
+import { useLoginMutation } from "@/features/auth/login";
 import { ApiError } from "@/shared/api";
 
 const schema = z.object({

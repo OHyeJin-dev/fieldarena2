@@ -1,0 +1,1 @@
+export { useDeleteCustomer } from "./model";

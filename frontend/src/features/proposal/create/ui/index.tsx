@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/shared/ui/button";
 import { TextField } from "@/shared/ui/text-field";
-import { useCreateProposal } from "./queries";
+import { useCreateProposal } from "../model";
 
 const schema = z.object({
   customerName: z.string().min(1, "고객명을 입력하세요"),

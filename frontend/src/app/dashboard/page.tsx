@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useDashboardSummary } from "@/entities/dashboard";
 import { useMe } from "@/entities/session";
-import { ProposalFormModal } from "@/features/proposals/ProposalFormModal";
+import { ProposalFormModal } from "@/features/proposal/create";
 
 const MONTHLY_TARGET = 10;
 

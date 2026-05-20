@@ -1,6 +1,5 @@
 import { apiFetch } from "@/shared/api";
 import type { ClaimDto } from "@/entities/claim";
-export type { ClaimDto };
 
 export interface ClaimCreateRequest {
   customerId: string;

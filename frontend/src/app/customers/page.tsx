@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useCustomers } from "@/entities/customer";
 import type { CustomerDto } from "@/entities/customer";
-import { useDeleteCustomer } from "@/features/customers/queries";
-import { CustomerFormModal } from "@/features/customers/CustomerFormModal";
+import { useDeleteCustomer } from "@/features/customer/delete";
+import { CustomerFormModal } from "@/features/customer/manage";
 
 export default function CustomersPage() {
   const [page, setPage] = useState(0);

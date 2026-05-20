@@ -6,8 +6,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/shared/ui/button";
 import { TextField } from "@/shared/ui/text-field";
-import { useCreateCustomer, useUpdateCustomer } from "./queries";
-import type { CustomerDto } from "./api";
+import { useCreateCustomer, useUpdateCustomer } from "../model";
+import type { CustomerDto } from "@/entities/customer";
 
 const schema = z.object({
   name: z.string().min(1, "이름을 입력하세요"),

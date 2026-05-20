@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useProposals } from "@/entities/proposal";
-import { ProposalFormModal } from "@/features/proposals/ProposalFormModal";
+import { ProposalFormModal } from "@/features/proposal/create";
 
 const STATUS_OPTIONS = ["전체", "작성 중", "설계 완료", "취소"] as const;
 

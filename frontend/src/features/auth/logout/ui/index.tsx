@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/shared/ui/button";
-import { useLogoutMutation } from "./queries";
+import { useLogoutMutation } from "../model";
 
 export function LogoutButton() {
   const router = useRouter();

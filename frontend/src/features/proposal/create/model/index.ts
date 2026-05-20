@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createProposal, type ProposalCreateRequest } from "./api";
+import { createProposal, type ProposalCreateRequest } from "../api";
 
 export function useCreateProposal() {
   const queryClient = useQueryClient();

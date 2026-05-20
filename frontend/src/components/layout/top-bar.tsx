@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu } from "lucide-react";
-import { LogoutButton } from "@/features/auth/logout-button";
+import { LogoutButton } from "@/features/auth/logout";
 
 interface TopBarProps {
   username: string;

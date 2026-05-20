@@ -7,7 +7,7 @@ import { z } from "zod";
 import { Button } from "@/shared/ui/button";
 import { TextField } from "@/shared/ui/text-field";
 import { useCustomers } from "@/entities/customer";
-import { useCreateClaim } from "./queries";
+import { useCreateClaim } from "../model";
 
 const schema = z.object({
   customerId: z.string().min(1, "고객을 선택하세요"),
