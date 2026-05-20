@@ -1,0 +1,83 @@
+name: Frontend CI
+
+on:
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-ci.yml'
+
+concurrency:
+  group: frontend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --config.strict-dep-builds=false
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint (ESLint)
+        run: pnpm lint
+
+      - name: FSD lint (Steiger)
+        id: fsd
+        if: "!contains(github.event.pull_request.labels.*.name, 'hotfix-bypass-fsd')"
+        run: pnpm lint:fsd 2>&1 | tee /tmp/fsd-output.txt
+        continue-on-error: true
+
+      - name: Comment FSD violations on PR
+        if: github.event_name == 'pull_request' && steps.fsd.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('/tmp/fsd-output.txt', 'utf8');
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: [
+                '## FSD 구조 위반 발견',
+                '',
+                '```',
+                output.slice(0, 5000),
+                '```',
+                '',
+                '📖 [FSD 가이드](https://feature-sliced.design/docs)',
+                '📋 [팀 컨벤션 spec](../blob/master/docs/superpowers/specs/2026-05-19-frontend-fsd-migration-design.md)',
+                '',
+                '긴급 핫픽스라면 PR에 `hotfix-bypass-fsd` 라벨을 추가해 검사를 우회할 수 있습니다.',
+                '단, 우회한 위반은 별도 follow-up 이슈로 처리해주세요.',
+              ].join('\n'),
+            });
+
+      - name: Fail if FSD failed
+        if: steps.fsd.outcome == 'failure'
+        run: exit 1
+
+      - name: Build
+        run: pnpm build
