@@ -1,16 +1,14 @@
 package com.agentsupport.customer.entity;
 
+import com.agentsupport.common.BaseAuditEntity;
 import com.agentsupport.security.PiiAttributeConverter;
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "customers")
-public class Customer {
+public class Customer extends BaseAuditEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -43,14 +41,6 @@ public class Customer {
 
   @Column(columnDefinition = "TEXT")
   private String memo;
-
-  @CreationTimestamp
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private LocalDateTime createdAt;
-
-  @UpdateTimestamp
-  @Column(name = "updated_at", nullable = false)
-  private LocalDateTime updatedAt;
 
   protected Customer() {}
 
@@ -90,6 +80,4 @@ public class Customer {
   public String getEmail() { return email; }
   public String getAddress() { return address; }
   public String getMemo() { return memo; }
-  public LocalDateTime getCreatedAt() { return createdAt; }
-  public LocalDateTime getUpdatedAt() { return updatedAt; }
 }

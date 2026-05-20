@@ -1,13 +1,12 @@
 package com.agentsupport.user.entity;
 
+import com.agentsupport.common.BaseAuditEntity;
 import com.agentsupport.security.PiiAttributeConverter;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends BaseAuditEntity {
 
   @Id
   @Column(length = 50)
@@ -39,10 +38,6 @@ public class User {
 
   @Column(nullable = false, length = 20)
   private String status;
-
-  @CreationTimestamp
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private LocalDateTime createdAt;
 
   protected User() {}
 
@@ -89,5 +84,4 @@ public class User {
   public String getEmailHash() { return emailHash; }
   public String getRole() { return role; }
   public String getStatus() { return status; }
-  public LocalDateTime getCreatedAt() { return createdAt; }
 }

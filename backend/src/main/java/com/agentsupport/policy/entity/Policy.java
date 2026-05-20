@@ -1,16 +1,14 @@
 package com.agentsupport.policy.entity;
 
+import com.agentsupport.common.BaseAuditEntity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "policies")
-public class Policy {
+public class Policy extends BaseAuditEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -39,14 +37,6 @@ public class Policy {
 
   @Column(name = "monthly_premium", precision = 12, scale = 2)
   private BigDecimal monthlyPremium;
-
-  @CreationTimestamp
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private LocalDateTime createdAt;
-
-  @UpdateTimestamp
-  @Column(name = "updated_at", nullable = false)
-  private LocalDateTime updatedAt;
 
   protected Policy() {}
 
