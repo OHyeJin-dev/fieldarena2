@@ -50,6 +50,10 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
+tasks.named<Jar>("jar") {
+	enabled = false
+}
+
 openApi {
 	apiDocsUrl.set("http://localhost:8080/v3/api-docs")
 	outputDir.set(file("../docs/generated"))
