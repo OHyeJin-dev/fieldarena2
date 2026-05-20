@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# FSD 룰 검사 — 위반 발견 시 커밋 차단
+cd "$(dirname -- "$0")/.."
+pnpm lint:fsd
