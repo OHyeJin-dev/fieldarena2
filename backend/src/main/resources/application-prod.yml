@@ -6,6 +6,8 @@ server:
         same-site: none
 
 spring:
+  main:
+    lazy-initialization: true
   session:
     jdbc:
       initialize-schema: never
