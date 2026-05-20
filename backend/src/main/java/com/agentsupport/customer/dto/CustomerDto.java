@@ -14,12 +14,17 @@ public record CustomerDto(
     String email,
     String address,
     String memo,
-    LocalDateTime createdAt) {
+    LocalDateTime createdAt,
+    String createdBy,
+    LocalDateTime updatedAt,
+    String updatedBy) {
 
   public static CustomerDto from(Customer c) {
     return new CustomerDto(
         c.getId(), c.getName(), c.getPhone(),
         c.getBirthDate(), c.getGender(), c.getEmail(),
-        c.getAddress(), c.getMemo(), c.getCreatedAt());
+        c.getAddress(), c.getMemo(),
+        c.getCreatedAt(), c.getCreatedBy(),
+        c.getUpdatedAt(), c.getUpdatedBy());
   }
 }

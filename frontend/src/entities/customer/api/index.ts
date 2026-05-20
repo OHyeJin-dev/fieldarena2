@@ -11,6 +11,9 @@ export interface CustomerDto {
   address: string | null;
   memo: string | null;
   createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 }
 
 export interface CustomerQuery {
