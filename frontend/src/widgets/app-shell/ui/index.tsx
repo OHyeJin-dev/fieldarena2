@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Sidebar } from "./sidebar";
-import { TopBar } from "./top-bar";
+import { Sidebar } from "@/widgets/sidebar";
+import { TopBar } from "@/widgets/top-bar";
 
 interface AppShellProps {
   userId: string;

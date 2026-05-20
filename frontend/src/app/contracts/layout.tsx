@@ -1,4 +1,4 @@
-import { AuthGuard } from "@/components/layout/auth-guard";
+import { AuthGuard } from "@/widgets/auth-guard";
 
 export default function ContractsLayout({
   children,

@@ -3,7 +3,7 @@
 import { useMe } from "@/entities/session";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { AppShell } from "./app-shell";
+import { AppShell } from "@/widgets/app-shell";
 
 interface AuthGuardProps {
   children: React.ReactNode;
