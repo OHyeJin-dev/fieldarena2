@@ -1,10 +1,9 @@
 name: Frontend CI
 
 on:
+  # PR trigger: 모든 PR에서 항상 실행 (branch protection의 required check 보장)
+  # frontend 변경이 없는 PR도 typecheck/lint/build/steiger를 빠르게 통과한다
   pull_request:
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/frontend-ci.yml'
   push:
     branches: [master]
     paths:
