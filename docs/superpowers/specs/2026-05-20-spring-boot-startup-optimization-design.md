@@ -157,3 +157,21 @@ ENTRYPOINT ["java", "-XX:SharedArchiveFile=app.jsa", "-jar", "app.jar"]
 | Lazy init 부작용 | 각 메뉴 첫 진입 시 500/타임아웃 없음 확인 |
 
 자동화 테스트는 추가하지 않는다. 부팅 시간은 build/deploy 로그로 측정한다.
+
+## 실측 결과 (2026-05-20)
+
+| 단계 | Render Free 콜드 부팅 시간 |
+|---|---|
+| 적용 전 | 수분 이상 (사용자 체감 매우 길었음, 정확치 미측정) |
+| 적용 후 | **~2분 (~120초)** |
+
+### 회고
+
+- 체감 개선은 확보. 목표 ~20–25초에는 미달.
+- 추정 원인: Render Free 의 매우 낮은 CPU 자원으로 클래스 로딩 외 영역(Hibernate 메타데이터 초기화, JPA 엔티티 스캐닝, 보안 필터 체인 구성)이 부팅 시간을 지배. CDS + Lazy init 의 효과가 상대적으로 작음.
+- 추가 단축 후보: GraalVM Native Image (~1초 부팅 가능). 단 springdoc-openapi, Flyway, Spring Security 의 reflection metadata 작업이 큰 편이라 ROI 낮음. 현 시점에서는 보류.
+
+### 부수 사항
+
+- 빌드 실패 1건 발생 (PR #5 1차 배포): `cp build/libs/*.jar app.jar` 가 fat JAR + plain JAR 둘 다 매치해 실패. PR #9 에서 `tasks.named<Jar>("jar") { enabled = false }` 로 plain JAR 비활성화하여 해결.
+- 코드 리뷰에서 발견된 잠재 버그 1건: `PiiEncryptor.INSTANCE` 가 lazy-init 환경에서 `AdminInitializer` 실행 시점에 null 일 수 있어 admin 사용자 PII 가 평문 저장되는 문제. `@Lazy(false)` 추가로 사전 차단.
