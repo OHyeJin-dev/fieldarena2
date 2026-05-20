@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { TextField } from "@/components/ui/text-field";
+import { Button } from "@/shared/ui/button";
+import { TextField } from "@/shared/ui/text-field";
 import { useCreateProposal } from "./queries";
 
 const schema = z.object({

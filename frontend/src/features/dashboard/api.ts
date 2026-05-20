@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api/csrf";
+import { apiFetch } from "@/shared/api";
 import type { ProposalDto } from "@/features/proposals/api";
 
 export interface DashboardSummaryDto {

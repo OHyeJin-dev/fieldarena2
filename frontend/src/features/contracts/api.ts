@@ -1,4 +1,5 @@
-import { apiFetch } from "@/lib/api/csrf";
+import { apiFetch } from "@/shared/api";
+import type { PageResponse } from "@/shared/api/types";
 
 export interface PolicyDto {
   id: string;
@@ -9,14 +10,6 @@ export interface PolicyDto {
   status: string;
   contractDate: string;
   monthlyPremium: number | null;
-}
-
-export interface PageResponse<T> {
-  content: T[];
-  totalElements: number;
-  totalPages: number;
-  pageNumber: number;
-  pageSize: number;
 }
 
 export interface PolicyQuery {

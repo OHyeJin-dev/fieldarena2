@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api/csrf";
+import { apiFetch } from "@/shared/api";
 
 export interface LoginRequest {
   username: string;

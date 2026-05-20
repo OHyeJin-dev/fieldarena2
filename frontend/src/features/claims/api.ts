@@ -1,5 +1,5 @@
-import { apiFetch } from "@/lib/api/csrf";
-import type { PageResponse } from "@/features/contracts/api";
+import { apiFetch } from "@/shared/api";
+import type { PageResponse } from "@/shared/api/types";
 
 export interface ClaimDto {
   id: string;
