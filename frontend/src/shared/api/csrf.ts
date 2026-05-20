@@ -31,6 +31,14 @@ export async function apiFetch<T>(
   const res = await fetch(input, { ...init, headers, credentials: "include" });
 
   if (!res.ok) {
+    if (
+      res.status === 401 &&
+      typeof window !== "undefined" &&
+      !input.includes("/api/auth/login") &&
+      window.location.pathname !== "/login"
+    ) {
+      window.location.replace("/login");
+    }
     const body = await res.json().catch(() => null);
     throw new ApiError(res.status, body);
   }
