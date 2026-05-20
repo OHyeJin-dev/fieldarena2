@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useUsers, useApproveMutation, useRejectMutation } from "@/features/admin/queries";
+import { useUsers, useApproveMutation, useRejectMutation } from "@/entities/user";
 
 const STATUS_LABELS: Record<string, string> = {
   PENDING: "대기",

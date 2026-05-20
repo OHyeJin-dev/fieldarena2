@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { usePolicies } from "@/features/contracts/queries";
+import { usePolicies } from "@/entities/contract";
 
 const STATUS_OPTIONS = ["전체", "심사 중", "승인 완료", "서류 보완", "반려", "지급 완료"] as const;
 

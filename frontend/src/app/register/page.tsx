@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useRegisterMutation } from "@/features/auth/queries";
-import { ApiError } from "@/lib/api/csrf";
+import { useRegisterMutation } from "@/features/auth/register";
+import { ApiError } from "@/shared/api";
 
 const schema = z.object({
   id: z.string().min(1, "아이디를 입력해주세요").max(50, "아이디는 50자 이하여야 합니다"),

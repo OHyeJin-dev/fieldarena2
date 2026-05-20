@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { useClaims } from "@/features/claims/queries";
-import { ClaimFormModal } from "@/features/claims/ClaimFormModal";
+import { useClaims } from "@/entities/claim";
+import { ClaimFormModal } from "@/features/claim/create";
 
 const STATUS_OPTIONS = ["전체", "접수", "심사 중", "추가 서류 요청", "지급 완료", "부지급"] as const;
 

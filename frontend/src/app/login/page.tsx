@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useLoginMutation } from "@/features/auth/queries";
-import { ApiError } from "@/lib/api/csrf";
+import { useLoginMutation } from "@/features/auth/login";
+import { ApiError } from "@/shared/api";
 
 const schema = z.object({
   username: z.string().min(1, "아이디를 입력해주세요"),
