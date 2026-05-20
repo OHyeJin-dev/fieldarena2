@@ -1,5 +1,16 @@
 import { apiFetch } from "@/shared/api";
-import type { ProposalDto } from "@/entities/proposal";
+
+export interface RecentProposalDto {
+  id: string;
+  customerName: string;
+  phoneNumber: string;
+  age: string;
+  productName: string;
+  insurerName: string;
+  monthlyPremium: number | null;
+  status: string;
+  proposedDate: string;
+}
 
 export interface DashboardSummaryDto {
   activeProposals: number;
@@ -8,7 +19,7 @@ export interface DashboardSummaryDto {
   monthlyProposals: number;
   myCustomers: number;
   monthlyClaims: number;
-  recentProposals: ProposalDto[];
+  recentProposals: RecentProposalDto[];
 }
 
 export function fetchDashboardSummary(): Promise<DashboardSummaryDto> {

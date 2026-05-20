@@ -1,7 +1,24 @@
 "use client";
 
 import { Menu } from "lucide-react";
-import { LogoutButton } from "@/features/auth/logout";
+import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/shared/ui/button";
+import { apiFetch } from "@/shared/api";
+
+function logout(): Promise<void> {
+  return apiFetch<void>("/api/auth/logout", { method: "POST" });
+}
+
+function useLogoutMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ["me"] });
+    },
+  });
+}
 
 interface TopBarProps {
   username: string;
@@ -9,6 +26,9 @@ interface TopBarProps {
 }
 
 export function TopBar({ username, onMenuClick }: TopBarProps) {
+  const router = useRouter();
+  const logoutMutation = useLogoutMutation();
+
   return (
     <header className="h-16 flex items-center justify-between px-6 bg-surface-container-lowest border-b border-outline-variant shrink-0">
       <button
@@ -21,7 +41,17 @@ export function TopBar({ username, onMenuClick }: TopBarProps) {
       </button>
       <div className="flex items-center gap-4">
         <span className="text-sm text-on-surface-variant">{username}</span>
-        <LogoutButton />
+        <Button
+          onClick={() =>
+            logoutMutation.mutate(undefined, {
+              onSuccess: () => router.push("/login"),
+            })
+          }
+          loading={logoutMutation.isPending}
+          className="!w-auto px-8"
+        >
+          로그아웃
+        </Button>
       </div>
     </header>
   );

@@ -4,6 +4,8 @@ import { useMe } from "@/entities/session";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AppShell } from "@/widgets/app-shell";
+import { Sidebar } from "@/widgets/sidebar";
+import { TopBar } from "@/widgets/top-bar";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -29,5 +31,22 @@ export function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
   if (!user) return null;
   if (allowedRoles && !allowedRoles.includes(user.role)) return null;
 
-  return <AppShell userId={user.id} role={user.role}>{children}</AppShell>;
+  return (
+    <AppShell
+      renderSidebar={({ desktopCollapsed, mobileDrawerOpen, onDesktopToggle, onMobileClose }) => (
+        <Sidebar
+          role={user.role}
+          desktopCollapsed={desktopCollapsed}
+          mobileDrawerOpen={mobileDrawerOpen}
+          onDesktopToggle={onDesktopToggle}
+          onMobileClose={onMobileClose}
+        />
+      )}
+      renderTopBar={({ onMenuClick }) => (
+        <TopBar username={user.id} onMenuClick={onMenuClick} />
+      )}
+    >
+      {children}
+    </AppShell>
+  );
 }

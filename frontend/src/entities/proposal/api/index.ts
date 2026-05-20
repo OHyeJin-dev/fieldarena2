@@ -1,5 +1,5 @@
 import { apiFetch } from "@/shared/api";
-import type { PageResponse } from "@/shared/api/types";
+import type { PageResponse } from "@/shared/api";
 
 export interface ProposalDto {
   id: string;

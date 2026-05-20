@@ -1,16 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { Sidebar } from "@/widgets/sidebar";
-import { TopBar } from "@/widgets/top-bar";
+
+interface SidebarSlotProps {
+  desktopCollapsed: boolean;
+  mobileDrawerOpen: boolean;
+  onDesktopToggle: () => void;
+  onMobileClose: () => void;
+}
+
+interface TopBarSlotProps {
+  onMenuClick: () => void;
+}
 
 interface AppShellProps {
-  userId: string;
-  role: string;
+  renderSidebar: (props: SidebarSlotProps) => React.ReactNode;
+  renderTopBar: (props: TopBarSlotProps) => React.ReactNode;
   children: React.ReactNode;
 }
 
-export function AppShell({ userId, role, children }: AppShellProps) {
+export function AppShell({ renderSidebar, renderTopBar, children }: AppShellProps) {
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
@@ -31,16 +40,15 @@ export function AppShell({ userId, role, children }: AppShellProps) {
         />
       )}
 
-      <Sidebar
-        role={role}
-        desktopCollapsed={desktopCollapsed}
-        mobileDrawerOpen={mobileDrawerOpen}
-        onDesktopToggle={() => setDesktopCollapsed((c) => !c)}
-        onMobileClose={() => setMobileDrawerOpen(false)}
-      />
+      {renderSidebar({
+        desktopCollapsed,
+        mobileDrawerOpen,
+        onDesktopToggle: () => setDesktopCollapsed((c) => !c),
+        onMobileClose: () => setMobileDrawerOpen(false),
+      })}
 
       <div className="flex flex-col flex-1 overflow-hidden min-w-0">
-        <TopBar username={userId} onMenuClick={handleMenuClick} />
+        {renderTopBar({ onMenuClick: handleMenuClick })}
         <main className="flex-1 overflow-auto bg-surface">{children}</main>
       </div>
     </div>
