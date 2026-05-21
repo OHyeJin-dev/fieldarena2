@@ -5,9 +5,11 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "policies")
+@EntityListeners(AuditingEntityListener.class)
 public class Policy extends BaseAuditEntity {
 
   @Id

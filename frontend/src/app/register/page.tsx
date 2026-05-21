@@ -8,12 +8,16 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRegisterMutation } from "@/features/auth/register";
 import { ApiError } from "@/shared/api";
+import { formatPhone } from "@/shared/lib/phone-format";
 
 const schema = z.object({
   id: z.string().min(1, "아이디를 입력해주세요").max(50, "아이디는 50자 이하여야 합니다"),
   password: z.string().min(8, "비밀번호는 8자 이상이어야 합니다"),
   name: z.string().min(1, "이름을 입력해주세요"),
-  phone: z.string().min(1, "연락처를 입력해주세요"),
+  phone: z
+    .string()
+    .min(1, "연락처를 입력해주세요")
+    .regex(/^010-\d{3,4}-\d{4}$/, "올바른 형식: 010-0000-0000"),
   gaName: z.string().min(1, "소속 GA를 입력해주세요"),
   email: z.string().min(1, "이메일을 입력해주세요").email("이메일 형식이 올바르지 않습니다"),
 });
@@ -90,23 +94,33 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
-            {fields.map((f) => (
-              <div key={f.name} className="flex flex-col gap-1.5">
-                <label className="text-sm font-semibold text-on-surface-variant px-1">
-                  {f.label}
-                </label>
-                <input
-                  type={f.type}
-                  placeholder={f.placeholder}
-                  autoComplete={f.autoComplete}
-                  className={[INPUT_CLASS, errors[f.name] ? "border-status-error" : ""].join(" ")}
-                  {...register(f.name)}
-                />
-                {errors[f.name] && (
-                  <p className="text-xs text-status-error px-1">{errors[f.name]?.message}</p>
-                )}
-              </div>
-            ))}
+            {fields.map((f) => {
+              const registerOptions =
+                f.name === "phone"
+                  ? {
+                      onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                        e.target.value = formatPhone(e.target.value);
+                      },
+                    }
+                  : undefined;
+              return (
+                <div key={f.name} className="flex flex-col gap-1.5">
+                  <label className="text-sm font-semibold text-on-surface-variant px-1">
+                    {f.label}
+                  </label>
+                  <input
+                    type={f.type}
+                    placeholder={f.placeholder}
+                    autoComplete={f.autoComplete}
+                    className={[INPUT_CLASS, errors[f.name] ? "border-status-error" : ""].join(" ")}
+                    {...register(f.name, registerOptions)}
+                  />
+                  {errors[f.name] && (
+                    <p className="text-xs text-status-error px-1">{errors[f.name]?.message}</p>
+                  )}
+                </div>
+              );
+            })}
 
             <button
               type="submit"
