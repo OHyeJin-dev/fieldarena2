@@ -10,4 +10,11 @@ export default defineConfig([
       "fsd/insignificant-slice": "off",
     },
   },
+  {
+    // features/health-analysis/request consumer will be added in Phase F (pages integration)
+    files: ["./src/features/health-analysis/**"],
+    rules: {
+      "fsd/insignificant-slice": "off",
+    },
+  },
 ]);
