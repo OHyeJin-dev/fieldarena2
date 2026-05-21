@@ -50,6 +50,8 @@ public interface PolicyRepository extends JpaRepository<Policy, UUID> {
 
   List<Policy> findTop5ByAgentIdOrderByContractDateDesc(String agentId);
 
+  long countByPolicyNumberStartingWith(String prefix);
+
   @Query("SELECT p.status, COUNT(p) FROM Policy p WHERE p.agentId = :agentId GROUP BY p.status")
   List<Object[]> countGroupByStatusForAgent(@Param("agentId") String agentId);
 }
