@@ -10,6 +10,8 @@ import {
   type HealthAnalysisDto,
 } from "@/entities/health-analysis";
 import { AnalysisRequestModal } from "@/features/health-analysis/request";
+import { Plus } from "lucide-react";
+import { PolicyFormModal } from "@/features/contract/create";
 
 const STATUS_OPTIONS = ["전체", "심사 중", "서류 보완", "승인 완료", "반려"] as const;
 
@@ -75,6 +77,7 @@ export default function UnderwritingPage() {
   const analysisIdParam = searchParams.get("analysisId");
   const { data: queriedAnalysis } = useAnalysis(analysisIdParam);
   const [queriedModalDismissed, setQueriedModalDismissed] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const showQueriedModal = !!queriedAnalysis && !queriedModalDismissed;
 
@@ -92,7 +95,7 @@ export default function UnderwritingPage() {
     <div className="p-6 max-w-300 mx-auto">
       <h1 className="text-2xl font-bold text-on-surface mb-6">심사 현황</h1>
 
-      <div className="mb-4">
+      <div className="mb-4 flex items-center justify-between">
         <select
           aria-label="상태 필터"
           value={status || "전체"}
@@ -105,6 +108,14 @@ export default function UnderwritingPage() {
             </option>
           ))}
         </select>
+        <button
+          type="button"
+          onClick={() => setShowCreateModal(true)}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-container text-on-primary text-sm font-semibold hover:opacity-90 transition-opacity"
+        >
+          <Plus size={16} />
+          새 심사 등록
+        </button>
       </div>
 
       <div className="bg-surface-container-lowest rounded-2xl shadow-card overflow-hidden">
@@ -211,6 +222,9 @@ export default function UnderwritingPage() {
           existingAnalysis={queriedAnalysis}
           onClose={closeQueriedModal}
         />
+      )}
+      {showCreateModal && (
+        <PolicyFormModal onClose={() => setShowCreateModal(false)} />
       )}
     </div>
   );
