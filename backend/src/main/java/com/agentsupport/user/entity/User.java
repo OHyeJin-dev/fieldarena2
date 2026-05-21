@@ -3,9 +3,11 @@ package com.agentsupport.user.entity;
 import com.agentsupport.common.BaseAuditEntity;
 import com.agentsupport.security.PiiAttributeConverter;
 import jakarta.persistence.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "users")
+@EntityListeners(AuditingEntityListener.class)
 public class User extends BaseAuditEntity {
 
   @Id

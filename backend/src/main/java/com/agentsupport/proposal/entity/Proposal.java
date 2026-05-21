@@ -6,9 +6,11 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "proposals")
+@EntityListeners(AuditingEntityListener.class)
 public class Proposal extends BaseAuditEntity {
 
   @Id

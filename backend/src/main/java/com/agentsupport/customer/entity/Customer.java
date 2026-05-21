@@ -5,9 +5,11 @@ import com.agentsupport.security.PiiAttributeConverter;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.UUID;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "customers")
+@EntityListeners(AuditingEntityListener.class)
 public class Customer extends BaseAuditEntity {
 
   @Id
