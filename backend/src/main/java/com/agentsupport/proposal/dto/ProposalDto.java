@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public record ProposalDto(
     UUID id,
+    UUID customerId,
     String customerName,
     String phoneNumber,
     String age,
@@ -20,6 +21,7 @@ public record ProposalDto(
   public static ProposalDto from(Proposal p) {
     return new ProposalDto(
         p.getId(),
+        p.getCustomerId(),
         maskName(p.getCustomerName()),
         maskPhone(p.getPhoneNumber()),
         maskAge(p.getBirthDate()),

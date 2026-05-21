@@ -35,6 +35,8 @@ public class ProposalController {
   public ProposalDto create(
       Authentication auth,
       @Valid @RequestBody ProposalCreateRequest request) {
-    return proposalService.createProposal(auth.getName(), request);
+    boolean isAdmin = auth.getAuthorities().stream()
+        .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
+    return proposalService.createProposal(auth.getName(), isAdmin, request);
   }
 }
