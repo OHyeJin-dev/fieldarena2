@@ -20,6 +20,9 @@ public class Proposal extends BaseAuditEntity {
   @Column(name = "agent_id", nullable = false, length = 50)
   private String agentId;
 
+  @Column(name = "customer_id")
+  private UUID customerId;
+
   @Convert(converter = PiiAttributeConverter.class)
   @Column(name = "customer_name", nullable = false)
   private String customerName;
@@ -51,6 +54,7 @@ public class Proposal extends BaseAuditEntity {
 
   public static Proposal create(
       String agentId,
+      UUID customerId,
       String customerName,
       String phoneNumber,
       String birthDate,
@@ -59,6 +63,7 @@ public class Proposal extends BaseAuditEntity {
       BigDecimal monthlyPremium) {
     Proposal p = new Proposal();
     p.agentId = agentId;
+    p.customerId = customerId;
     p.customerName = customerName;
     p.phoneNumber = phoneNumber;
     p.birthDate = birthDate;
@@ -72,6 +77,7 @@ public class Proposal extends BaseAuditEntity {
 
   public UUID getId() { return id; }
   public String getAgentId() { return agentId; }
+  public UUID getCustomerId() { return customerId; }
   public String getCustomerName() { return customerName; }
   public String getPhoneNumber() { return phoneNumber; }
   public String getBirthDate() { return birthDate; }
