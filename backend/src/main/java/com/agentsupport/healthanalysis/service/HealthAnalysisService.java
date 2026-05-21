@@ -124,9 +124,13 @@ public class HealthAnalysisService {
   // ── Task 10: createOrUpdate ──────────────────────────────────────────────
 
   @Transactional
-  public HealthAnalysisDto createOrUpdate(UUID customerId, Scenario scenario, String agentId) {
+  public HealthAnalysisDto createOrUpdate(UUID customerId, Scenario scenario, String agentId, boolean isAdmin) {
     Customer customer = customerRepository.findById(customerId)
         .orElseThrow(() -> new IllegalArgumentException("customer not found: " + customerId));
+
+    if (!isAdmin && !agentId.equals(customer.getAgentId())) {
+      throw new AccessDeniedException("not allowed: customer belongs to another agent");
+    }
 
     // 1. 더미 데이터 생성
     HealthDataPayload payload = generator.generate(
