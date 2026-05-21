@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useDashboardSummary } from "@/entities/dashboard";
 import { useMe } from "@/entities/session";
+import { useAnalysisSummary, useRecentAnalyses, RiskBadge } from "@/entities/health-analysis";
 import { ProposalFormModal } from "@/features/proposal/create";
 
 const MONTHLY_TARGET = 10;
@@ -50,6 +51,23 @@ const PROPOSAL_STATUS_CLASS: Record<string, string> = {
   "취소": "bg-surface-container-high text-on-surface-variant",
 };
 
+function AnalysisSummaryCard({
+  label,
+  value,
+  colorClass = "text-on-surface",
+}: {
+  label: string;
+  value: number;
+  colorClass?: string;
+}) {
+  return (
+    <div className="bg-surface-container-lowest rounded-2xl p-4 shadow-card">
+      <div className="text-xs text-on-surface-variant">{label}</div>
+      <div className={`text-2xl font-bold ${colorClass}`}>{value}명</div>
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const { data, isLoading } = useDashboardSummary();
   const { data: me } = useMe();
@@ -57,6 +75,9 @@ export default function DashboardPage() {
   const tabs: readonly string[] = isAgent2 ? TABS_AGENT2 : TABS_DEFAULT;
   const [activeTab, setActiveTab] = useState<string>("공지사항");
   const [showModal, setShowModal] = useState(false);
+
+  const { data: analysisSummary } = useAnalysisSummary();
+  const { data: recentAnalyses } = useRecentAnalyses(5);
 
   const activeProposals = data?.activeProposals ?? 0;
   const underwritingPending = data?.underwritingPending ?? 0;
@@ -420,6 +441,47 @@ export default function DashboardPage() {
             value={isLoading ? 0 : monthlyProposals}
           />
         </div>
+      )}
+
+      {/* 건강 분석 현황 — AGENT2는 숨김 */}
+      {!isAgent2 && (
+        <>
+          <section className="flex flex-col gap-3">
+            <h2 className="text-lg font-semibold text-on-surface">건강 분석 현황</h2>
+            <div className="grid grid-cols-4 gap-3">
+              <AnalysisSummaryCard label="분석 완료" value={analysisSummary?.total ?? 0} />
+              <AnalysisSummaryCard label="정상" value={analysisSummary?.normal ?? 0} colorClass="text-status-success" />
+              <AnalysisSummaryCard label="주의" value={analysisSummary?.caution ?? 0} colorClass="text-status-warning" />
+              <AnalysisSummaryCard label="위험" value={analysisSummary?.risk ?? 0} colorClass="text-status-error" />
+            </div>
+          </section>
+
+          <section className="flex flex-col gap-3">
+            <h2 className="text-lg font-semibold text-on-surface">최근 분석 5건</h2>
+            <div className="bg-surface-container-lowest rounded-2xl shadow-card overflow-hidden">
+              {recentAnalyses && recentAnalyses.length === 0 && (
+                <div className="px-6 py-8 text-center text-sm text-on-surface-variant">
+                  아직 분석된 건강 데이터가 없습니다.
+                </div>
+              )}
+              {recentAnalyses?.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/underwriting?analysisId=${item.id}`}
+                  className="flex items-center justify-between px-6 py-3 hover:bg-surface-container-low border-b border-outline-variant last:border-b-0"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium text-on-surface">{item.customerName}</span>
+                    <RiskBadge grade={item.riskGrade} />
+                  </div>
+                  <span className="text-xs text-on-surface-variant">
+                    {new Date(item.analyzedAt).toLocaleString("ko-KR")}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </>
       )}
     </div>
   );
