@@ -111,13 +111,18 @@ export function CustomerFormModal({ onClose, initial }: Props) {
               <div className="flex flex-col gap-1">
                 <label className="text-sm text-on-surface-variant">성별</label>
                 <select
-                  className="px-3 py-2 rounded-lg border border-outline-variant bg-surface-container-lowest text-sm text-on-surface outline-none focus:border-primary-container"
+                  className={`px-3 py-2 rounded-lg border ${
+                    errors.gender ? "border-status-error" : "border-outline-variant"
+                  } bg-surface-container-lowest text-sm text-on-surface outline-none focus:border-primary-container`}
                   {...register("gender")}
                 >
                   <option value="">선택</option>
                   <option value="M">남</option>
                   <option value="F">여</option>
                 </select>
+                {errors.gender?.message && (
+                  <span className="text-xs text-status-error">{errors.gender.message}</span>
+                )}
               </div>
             </div>
             <TextField
