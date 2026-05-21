@@ -3,6 +3,7 @@ import type { PageResponse } from "@/shared/api";
 
 export interface ProposalDto {
   id: string;
+  customerId: string | null;
   customerName: string;
   phoneNumber: string;
   age: string;

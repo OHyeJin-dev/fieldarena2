@@ -2,9 +2,7 @@ import { apiFetch } from "@/shared/api";
 import type { ProposalDto } from "@/entities/proposal";
 
 export interface ProposalCreateRequest {
-  customerName: string;
-  phoneNumber: string;
-  birthDate: string;
+  customerId: string;
   productName: string;
   insurerName: string;
   monthlyPremium: number;
