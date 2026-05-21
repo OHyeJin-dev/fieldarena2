@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/shared/ui/button";
+import { formatPhone } from "@/shared/lib/phone-format";
 import { TextField } from "@/shared/ui/text-field";
 import { useCreateCustomer, useUpdateCustomer } from "../model";
 import type { CustomerDto } from "@/entities/customer";
@@ -12,8 +13,8 @@ import type { CustomerDto } from "@/entities/customer";
 const schema = z.object({
   name: z.string().min(1, "이름을 입력하세요"),
   phone: z.string().regex(/^010-\d{3,4}-\d{4}$/, "올바른 형식: 010-0000-0000"),
-  birthDate: z.string().optional(),
-  gender: z.enum(["M", "F", ""]).optional(),
+  birthDate: z.string().min(1, "생년월일을 입력하세요"),
+  gender: z.enum(["M", "F"], { message: "성별을 선택하세요" }),
   email: z.string().email("올바른 이메일").or(z.literal("")).optional(),
   address: z.string().optional(),
   memo: z.string().optional(),
@@ -42,7 +43,7 @@ export function CustomerFormModal({ onClose, initial }: Props) {
       name: initial?.name ?? "",
       phone: initial?.phone ?? "",
       birthDate: initial?.birthDate ?? "",
-      gender: (initial?.gender as "M" | "F" | "") ?? "",
+      gender: (initial?.gender as "M" | "F" | undefined) ?? undefined,
       email: initial?.email ?? "",
       address: initial?.address ?? "",
       memo: initial?.memo ?? "",
@@ -53,8 +54,8 @@ export function CustomerFormModal({ onClose, initial }: Props) {
     const payload = {
       name: values.name,
       phone: values.phone,
-      birthDate: values.birthDate || null,
-      gender: values.gender || null,
+      birthDate: values.birthDate,
+      gender: values.gender,
       email: values.email || null,
       address: values.address || null,
       memo: values.memo || null,
@@ -93,7 +94,11 @@ export function CustomerFormModal({ onClose, initial }: Props) {
                 label="휴대폰번호"
                 placeholder="010-0000-0000"
                 error={errors.phone?.message}
-                {...register("phone")}
+                {...register("phone", {
+                  onChange: (e) => {
+                    e.target.value = formatPhone(e.target.value);
+                  },
+                })}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
