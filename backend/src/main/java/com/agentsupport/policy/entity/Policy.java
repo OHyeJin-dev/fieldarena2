@@ -45,6 +45,30 @@ public class Policy extends BaseAuditEntity {
 
   protected Policy() {}
 
+  public static Policy create(
+      String policyNumber,
+      String agentId,
+      UUID customerId,
+      String customerName,
+      String productName,
+      String insurerName,
+      String status,
+      LocalDate contractDate,
+      BigDecimal monthlyPremium
+  ) {
+    Policy p = new Policy();
+    p.policyNumber = policyNumber;
+    p.agentId = agentId;
+    p.customerId = customerId;
+    p.customerName = customerName;
+    p.productName = productName;
+    p.insurerName = insurerName;
+    p.status = status;
+    p.contractDate = contractDate;
+    p.monthlyPremium = monthlyPremium;
+    return p;
+  }
+
   public UUID getId() { return id; }
   public String getPolicyNumber() { return policyNumber; }
   public String getAgentId() { return agentId; }
