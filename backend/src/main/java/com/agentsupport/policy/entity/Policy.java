@@ -23,6 +23,9 @@ public class Policy extends BaseAuditEntity {
   @Column(name = "customer_name", nullable = false, length = 50)
   private String customerName;
 
+  @Column(name = "customer_id")
+  private UUID customerId;
+
   @Column(name = "product_name", nullable = false, length = 100)
   private String productName;
 
@@ -44,6 +47,7 @@ public class Policy extends BaseAuditEntity {
   public String getPolicyNumber() { return policyNumber; }
   public String getAgentId() { return agentId; }
   public String getCustomerName() { return customerName; }
+  public UUID getCustomerId() { return customerId; }
   public String getProductName() { return productName; }
   public String getInsurerName() { return insurerName; }
   public String getStatus() { return status; }

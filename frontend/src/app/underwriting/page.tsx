@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { usePolicies } from "@/entities/contract";
+import {
+  useAnalysesByCustomers,
+  useAnalysis,
+  RiskBadge,
+  type HealthAnalysisDto,
+} from "@/entities/health-analysis";
+import { AnalysisRequestModal } from "@/features/health-analysis/request";
 
 const STATUS_OPTIONS = ["전체", "심사 중", "서류 보완", "승인 완료", "반려"] as const;
 
@@ -12,6 +20,43 @@ const STATUS_CLASS: Record<string, string> = {
   "반려": "bg-status-error-container text-status-error",
 };
 
+function AnalysisCell({
+  customer,
+  analysis,
+}: {
+  customer: { id: string | null; name: string };
+  analysis: HealthAnalysisDto | null;
+}) {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  if (!customer.id) {
+    return <span className="text-sm text-on-surface-variant">-</span>;
+  }
+
+  return (
+    <>
+      {analysis ? (
+        <RiskBadge grade={analysis.riskGrade} onClick={() => setModalOpen(true)} />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setModalOpen(true)}
+          className="text-xs text-primary hover:underline"
+        >
+          + 분석 요청
+        </button>
+      )}
+      {modalOpen && (
+        <AnalysisRequestModal
+          customer={{ id: customer.id, name: customer.name }}
+          existingAnalysis={analysis ?? undefined}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
+    </>
+  );
+}
+
 export default function UnderwritingPage() {
   const [status, setStatus] = useState("");
   const [page, setPage] = useState(0);
@@ -21,6 +66,22 @@ export default function UnderwritingPage() {
     size: 20,
     status: status || undefined,
   });
+
+  const customerIds = data?.content.map((p) => p.customerId) ?? [];
+  const { data: analysisMap } = useAnalysesByCustomers(customerIds);
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const analysisIdParam = searchParams.get("analysisId");
+  const { data: queriedAnalysis } = useAnalysis(analysisIdParam);
+  const [queriedModalDismissed, setQueriedModalDismissed] = useState(false);
+
+  const showQueriedModal = !!queriedAnalysis && !queriedModalDismissed;
+
+  function closeQueriedModal() {
+    setQueriedModalDismissed(true);
+    router.replace("/underwriting", { scroll: false });
+  }
 
   function handleStatusChange(value: string) {
     setStatus(value === "전체" ? "" : value);
@@ -56,6 +117,7 @@ export default function UnderwritingPage() {
               <th className="text-left px-6 py-3 font-medium">보험사</th>
               <th className="text-left px-6 py-3 font-medium">상태</th>
               <th className="text-left px-6 py-3 font-medium">계약일</th>
+              <th className="text-left px-6 py-3 font-medium">분석</th>
             </tr>
           </thead>
           <tbody>
@@ -63,7 +125,7 @@ export default function UnderwritingPage() {
               <>
                 {Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i} className="border-b border-outline-variant">
-                    {Array.from({ length: 6 }).map((_, j) => (
+                    {Array.from({ length: 7 }).map((_, j) => (
                       <td key={j} className="px-6 py-4">
                         <div className="h-4 bg-surface-container rounded animate-pulse" />
                       </td>
@@ -74,14 +136,14 @@ export default function UnderwritingPage() {
             )}
             {isError && (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-sm text-status-error">
+                <td colSpan={7} className="px-6 py-12 text-center text-sm text-status-error">
                   데이터를 불러오지 못했습니다.
                 </td>
               </tr>
             )}
             {!isLoading && !isError && data?.content.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-sm text-on-surface-variant">
+                <td colSpan={7} className="px-6 py-12 text-center text-sm text-on-surface-variant">
                   심사 내역이 없습니다.
                 </td>
               </tr>
@@ -107,6 +169,12 @@ export default function UnderwritingPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-on-surface-variant">{c.contractDate}</td>
+                  <td className="px-6 py-4">
+                    <AnalysisCell
+                      customer={{ id: c.customerId, name: c.customerName }}
+                      analysis={c.customerId ? analysisMap?.[c.customerId] ?? null : null}
+                    />
+                  </td>
                 </tr>
               ))}
           </tbody>
@@ -136,6 +204,14 @@ export default function UnderwritingPage() {
           </div>
         )}
       </div>
+
+      {showQueriedModal && queriedAnalysis && (
+        <AnalysisRequestModal
+          customer={{ id: queriedAnalysis.customerId, name: queriedAnalysis.customerName }}
+          existingAnalysis={queriedAnalysis}
+          onClose={closeQueriedModal}
+        />
+      )}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import type { PageResponse } from "@/shared/api";
 export interface PolicyDto {
   id: string;
   policyNumber: string;
+  customerId: string | null;
   customerName: string;
   productName: string;
   insurerName: string;
