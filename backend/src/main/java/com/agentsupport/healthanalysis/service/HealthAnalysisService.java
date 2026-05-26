@@ -139,7 +139,7 @@ public class HealthAnalysisService {
 
     // 2. HealthData 저장 (누적)
     HealthData savedData = healthDataRepository.save(
-        HealthData.create(customerId, "NHIS_DUMMY", scenario.name(), payloadJson, agentId)
+        HealthData.create(customer, "NHIS_DUMMY", scenario.name(), payloadJson, agentId)
     );
 
     // 3. 분석
