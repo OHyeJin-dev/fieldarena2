@@ -1,5 +1,6 @@
 package com.agentsupport.healthanalysis.entity;
 
+import com.agentsupport.customer.entity.Customer;
 import com.agentsupport.healthanalysis.RiskGrade;
 import com.agentsupport.healthanalysis.UnderwritingRecommendation;
 import com.agentsupport.security.PiiAttributeConverter;
@@ -16,11 +17,13 @@ public class HealthAnalysis {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column(name = "customer_id", nullable = false, unique = true)
-  private UUID customerId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "customer_id", nullable = false, unique = true)
+  private Customer customer;
 
-  @Column(name = "health_data_id", nullable = false)
-  private UUID healthDataId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "health_data_id", nullable = false)
+  private HealthData healthData;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "risk_grade", nullable = false, length = 10)
@@ -50,13 +53,13 @@ public class HealthAnalysis {
   protected HealthAnalysis() {}
 
   public static HealthAnalysis create(
-      UUID customerId, UUID healthDataId,
+      Customer customer, HealthData healthData,
       RiskGrade riskGrade, boolean hasDisease, String diseases,
       UnderwritingRecommendation rec, String summary, String analyzedBy
   ) {
     HealthAnalysis a = new HealthAnalysis();
-    a.customerId = customerId;
-    a.healthDataId = healthDataId;
+    a.customer = customer;
+    a.healthData = healthData;
     a.riskGrade = riskGrade;
     a.hasDisease = hasDisease;
     a.diseases = diseases;
@@ -67,11 +70,11 @@ public class HealthAnalysis {
   }
 
   public void replaceWith(
-      UUID healthDataId,
+      HealthData healthData,
       RiskGrade riskGrade, boolean hasDisease, String diseases,
       UnderwritingRecommendation rec, String summary, String analyzedBy
   ) {
-    this.healthDataId = healthDataId;
+    this.healthData = healthData;
     this.riskGrade = riskGrade;
     this.hasDisease = hasDisease;
     this.diseases = diseases;
@@ -81,8 +84,10 @@ public class HealthAnalysis {
   }
 
   public UUID getId() { return id; }
-  public UUID getCustomerId() { return customerId; }
-  public UUID getHealthDataId() { return healthDataId; }
+  public Customer getCustomer() { return customer; }
+  public UUID getCustomerId() { return customer != null ? customer.getId() : null; }
+  public HealthData getHealthData() { return healthData; }
+  public UUID getHealthDataId() { return healthData != null ? healthData.getId() : null; }
   public RiskGrade getRiskGrade() { return riskGrade; }
   public boolean isHasDisease() { return hasDisease; }
   public String getDiseases() { return diseases; }

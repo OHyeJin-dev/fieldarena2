@@ -1,6 +1,7 @@
 package com.agentsupport.policy.entity;
 
 import com.agentsupport.common.BaseAuditEntity;
+import com.agentsupport.customer.entity.Customer;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,8 +26,9 @@ public class Policy extends BaseAuditEntity {
   @Column(name = "customer_name", nullable = false, length = 50)
   private String customerName;
 
-  @Column(name = "customer_id")
-  private UUID customerId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "customer_id")
+  private Customer customer;
 
   @Column(name = "product_name", nullable = false, length = 100)
   private String productName;
@@ -48,7 +50,7 @@ public class Policy extends BaseAuditEntity {
   public static Policy create(
       String policyNumber,
       String agentId,
-      UUID customerId,
+      Customer customer,
       String customerName,
       String productName,
       String insurerName,
@@ -59,7 +61,7 @@ public class Policy extends BaseAuditEntity {
     Policy p = new Policy();
     p.policyNumber = policyNumber;
     p.agentId = agentId;
-    p.customerId = customerId;
+    p.customer = customer;
     p.customerName = customerName;
     p.productName = productName;
     p.insurerName = insurerName;
@@ -73,7 +75,8 @@ public class Policy extends BaseAuditEntity {
   public String getPolicyNumber() { return policyNumber; }
   public String getAgentId() { return agentId; }
   public String getCustomerName() { return customerName; }
-  public UUID getCustomerId() { return customerId; }
+  public Customer getCustomer() { return customer; }
+  public UUID getCustomerId() { return customer != null ? customer.getId() : null; }
   public String getProductName() { return productName; }
   public String getInsurerName() { return insurerName; }
   public String getStatus() { return status; }

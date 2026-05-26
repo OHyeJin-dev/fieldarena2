@@ -1,5 +1,6 @@
 package com.agentsupport.healthanalysis.entity;
 
+import com.agentsupport.customer.entity.Customer;
 import com.agentsupport.security.PiiAttributeConverter;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -14,8 +15,9 @@ public class HealthData {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column(name = "customer_id", nullable = false)
-  private UUID customerId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "customer_id", nullable = false)
+  private Customer customer;
 
   @Column(nullable = false, length = 20)
   private String source;
@@ -37,11 +39,11 @@ public class HealthData {
   protected HealthData() {}
 
   public static HealthData create(
-      UUID customerId, String source, String scenario,
+      Customer customer, String source, String scenario,
       String payload, String collectedBy
   ) {
     HealthData h = new HealthData();
-    h.customerId = customerId;
+    h.customer = customer;
     h.source = source;
     h.scenario = scenario;
     h.payload = payload;
@@ -50,7 +52,8 @@ public class HealthData {
   }
 
   public UUID getId() { return id; }
-  public UUID getCustomerId() { return customerId; }
+  public Customer getCustomer() { return customer; }
+  public UUID getCustomerId() { return customer != null ? customer.getId() : null; }
   public String getSource() { return source; }
   public String getScenario() { return scenario; }
   public String getPayload() { return payload; }

@@ -41,7 +41,7 @@ public class ClaimService {
 
     Claim claim = Claim.create(
         agentId,
-        customer.getId(),
+        customer,
         req.policyNumber(),
         customer.getName(),
         req.insurerName(),

@@ -57,7 +57,7 @@ public class PolicyService {
     Policy policy = Policy.create(
         policyNumber,
         agentId,
-        customer.getId(),
+        customer,
         customer.getName(),
         req.productName(),
         req.insurerName(),

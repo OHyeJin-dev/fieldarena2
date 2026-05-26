@@ -45,7 +45,7 @@ public class ProposalService {
 
     Proposal proposal = Proposal.create(
         agentId,
-        customer.getId(),
+        customer,
         customer.getName(),
         customer.getPhone(),
         customer.getBirthDate() == null ? null : customer.getBirthDate().toString(),
