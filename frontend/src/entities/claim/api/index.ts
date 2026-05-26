@@ -26,3 +26,8 @@ export function fetchClaims(query: ClaimQuery = {}): Promise<PageResponse<ClaimD
   const qs = params.toString();
   return apiFetch<PageResponse<ClaimDto>>(`/api/claims${qs ? `?${qs}` : ""}`);
 }
+
+export const claimKeys = {
+  all: ["claims"] as const,
+  list: (query: ClaimQuery = {}) => ["claims", query] as const,
+};

@@ -31,3 +31,8 @@ export function fetchPolicies(query: PolicyQuery = {}): Promise<PageResponse<Pol
   const qs = params.toString();
   return apiFetch<PageResponse<PolicyDto>>(`/api/policies${qs ? `?${qs}` : ""}`);
 }
+
+export const policyKeys = {
+  all: ["policies"] as const,
+  list: (query: PolicyQuery = {}) => ["policies", query] as const,
+};

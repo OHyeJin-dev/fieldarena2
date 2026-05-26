@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchCustomers, type CustomerQuery } from "../api";
+import { customerKeys, fetchCustomers, type CustomerQuery } from "../api";
 
 export function useCustomers(query: CustomerQuery = {}) {
   return useQuery({
-    queryKey: ["customers", query],
+    queryKey: customerKeys.list(query),
     queryFn: () => fetchCustomers(query),
   });
 }

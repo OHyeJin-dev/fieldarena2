@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchClaims, type ClaimQuery } from "../api";
+import { claimKeys, fetchClaims, type ClaimQuery } from "../api";
 
 export function useClaims(query: ClaimQuery = {}) {
   return useQuery({
-    queryKey: ["claims", query],
+    queryKey: claimKeys.list(query),
     queryFn: () => fetchClaims(query),
   });
 }

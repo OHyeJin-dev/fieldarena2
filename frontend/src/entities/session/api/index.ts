@@ -8,3 +8,7 @@ export interface MeResponse {
 export function me(): Promise<MeResponse> {
   return apiFetch<MeResponse>("/api/auth/me");
 }
+
+export const sessionKeys = {
+  me: () => ["me"] as const,
+};

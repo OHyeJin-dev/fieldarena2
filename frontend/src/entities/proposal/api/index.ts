@@ -28,3 +28,8 @@ export function fetchProposals(query: ProposalQuery = {}): Promise<PageResponse<
   const qs = params.toString();
   return apiFetch<PageResponse<ProposalDto>>(`/api/proposals${qs ? `?${qs}` : ""}`);
 }
+
+export const proposalKeys = {
+  all: ["proposals"] as const,
+  list: (query: ProposalQuery = {}) => ["proposals", query] as const,
+};
