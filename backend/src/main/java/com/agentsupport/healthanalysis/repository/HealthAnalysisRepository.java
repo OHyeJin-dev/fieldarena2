@@ -12,9 +12,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface HealthAnalysisRepository extends JpaRepository<HealthAnalysis, UUID> {
 
-  Optional<HealthAnalysis> findByCustomerId(UUID customerId);
+  Optional<HealthAnalysis> findByCustomer_Id(UUID customerId);
 
-  List<HealthAnalysis> findByCustomerIdIn(List<UUID> customerIds);
+  List<HealthAnalysis> findByCustomer_IdIn(List<UUID> customerIds);
 
   @Query("SELECT h FROM HealthAnalysis h WHERE h.analyzedBy = :analyzedBy ORDER BY h.analyzedAt DESC")
   List<HealthAnalysis> findRecentByAnalyzedBy(@Param("analyzedBy") String analyzedBy, Pageable pageable);

@@ -147,16 +147,16 @@ public class HealthAnalysisService {
     String diseasesJson = serialize(outcome.diseases());
 
     // 4. UPSERT
-    HealthAnalysis analysis = healthAnalysisRepository.findByCustomerId(customerId).orElse(null);
+    HealthAnalysis analysis = healthAnalysisRepository.findByCustomer_Id(customerId).orElse(null);
     if (analysis == null) {
       analysis = HealthAnalysis.create(
-          customerId, savedData.getId(),
+          customer, savedData,
           outcome.riskGrade(), outcome.hasDisease(), diseasesJson,
           outcome.recommendation(), outcome.summary(), agentId
       );
     } else {
       analysis.replaceWith(
-          savedData.getId(),
+          savedData,
           outcome.riskGrade(), outcome.hasDisease(), diseasesJson,
           outcome.recommendation(), outcome.summary(), agentId
       );
@@ -219,7 +219,7 @@ public class HealthAnalysisService {
     Map<UUID, Customer> customerById = customerRepository.findAllById(allowedCustomerIds).stream()
         .collect(Collectors.toMap(Customer::getId, c -> c));
 
-    return healthAnalysisRepository.findByCustomerIdIn(allowedCustomerIds).stream()
+    return healthAnalysisRepository.findByCustomer_IdIn(allowedCustomerIds).stream()
         .collect(Collectors.toMap(
             HealthAnalysis::getCustomerId,
             a -> toDto(a, customerById.get(a.getCustomerId()))
