@@ -1,6 +1,7 @@
 package com.agentsupport.claim.entity;
 
 import com.agentsupport.common.BaseAuditEntity;
+import com.agentsupport.customer.entity.Customer;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,8 +20,9 @@ public class Claim extends BaseAuditEntity {
   @Column(name = "agent_id", nullable = false, length = 50)
   private String agentId;
 
-  @Column(name = "customer_id")
-  private UUID customerId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "customer_id")
+  private Customer customer;
 
   @Column(name = "policy_number", nullable = false, length = 20)
   private String policyNumber;
@@ -46,12 +48,12 @@ public class Claim extends BaseAuditEntity {
   protected Claim() {}
 
   public static Claim create(
-      String agentId, UUID customerId, String policyNumber, String customerName,
+      String agentId, Customer customer, String policyNumber, String customerName,
       String insurerName, String claimType, BigDecimal claimAmount,
       String status, LocalDate claimDate) {
     Claim c = new Claim();
     c.agentId = agentId;
-    c.customerId = customerId;
+    c.customer = customer;
     c.policyNumber = policyNumber;
     c.customerName = customerName;
     c.insurerName = insurerName;
@@ -64,7 +66,8 @@ public class Claim extends BaseAuditEntity {
 
   public UUID getId() { return id; }
   public String getAgentId() { return agentId; }
-  public UUID getCustomerId() { return customerId; }
+  public Customer getCustomer() { return customer; }
+  public UUID getCustomerId() { return customer != null ? customer.getId() : null; }
   public String getPolicyNumber() { return policyNumber; }
   public String getCustomerName() { return customerName; }
   public String getInsurerName() { return insurerName; }
