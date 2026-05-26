@@ -1,6 +1,7 @@
 package com.agentsupport.proposal.entity;
 
 import com.agentsupport.common.BaseAuditEntity;
+import com.agentsupport.customer.entity.Customer;
 import com.agentsupport.security.PiiAttributeConverter;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -20,8 +21,9 @@ public class Proposal extends BaseAuditEntity {
   @Column(name = "agent_id", nullable = false, length = 50)
   private String agentId;
 
-  @Column(name = "customer_id")
-  private UUID customerId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "customer_id")
+  private Customer customer;
 
   @Convert(converter = PiiAttributeConverter.class)
   @Column(name = "customer_name", nullable = false)
@@ -54,7 +56,7 @@ public class Proposal extends BaseAuditEntity {
 
   public static Proposal create(
       String agentId,
-      UUID customerId,
+      Customer customer,
       String customerName,
       String phoneNumber,
       String birthDate,
@@ -63,7 +65,7 @@ public class Proposal extends BaseAuditEntity {
       BigDecimal monthlyPremium) {
     Proposal p = new Proposal();
     p.agentId = agentId;
-    p.customerId = customerId;
+    p.customer = customer;
     p.customerName = customerName;
     p.phoneNumber = phoneNumber;
     p.birthDate = birthDate;
@@ -77,7 +79,8 @@ public class Proposal extends BaseAuditEntity {
 
   public UUID getId() { return id; }
   public String getAgentId() { return agentId; }
-  public UUID getCustomerId() { return customerId; }
+  public Customer getCustomer() { return customer; }
+  public UUID getCustomerId() { return customer != null ? customer.getId() : null; }
   public String getCustomerName() { return customerName; }
   public String getPhoneNumber() { return phoneNumber; }
   public String getBirthDate() { return birthDate; }
