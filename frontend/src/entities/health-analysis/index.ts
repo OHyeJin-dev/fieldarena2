@@ -12,6 +12,7 @@ export {
   fetchAnalysis,
   fetchAnalysisSummary,
   fetchRecentAnalyses,
+  healthAnalysisKeys,
 } from "./api";
 export {
   useAnalysesByCustomers,

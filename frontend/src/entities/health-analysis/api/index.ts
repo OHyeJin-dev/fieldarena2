@@ -60,3 +60,11 @@ export function fetchAnalysisSummary(): Promise<AnalysisSummaryDto> {
 export function fetchRecentAnalyses(limit = 5): Promise<RecentAnalysisItemDto[]> {
   return apiFetch<RecentAnalysisItemDto[]>(`/api/health-analyses/recent?limit=${limit}`);
 }
+
+export const healthAnalysisKeys = {
+  all: ["health-analyses"] as const,
+  byCustomers: (ids: string[]) => ["health-analyses", "by-customers", ids] as const,
+  detail: (id: string) => ["health-analyses", "by-id", id] as const,
+  summary: () => ["health-analyses", "summary"] as const,
+  recent: (limit: number) => ["health-analyses", "recent", limit] as const,
+};

@@ -25,3 +25,7 @@ export interface DashboardSummaryDto {
 export function fetchDashboardSummary(): Promise<DashboardSummaryDto> {
   return apiFetch<DashboardSummaryDto>("/api/dashboard/summary");
 }
+
+export const dashboardKeys = {
+  summary: () => ["dashboard", "summary"] as const,
+};

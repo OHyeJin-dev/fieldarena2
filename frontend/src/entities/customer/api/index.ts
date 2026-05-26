@@ -28,3 +28,8 @@ export function fetchCustomers(query: CustomerQuery = {}): Promise<PageResponse<
   const qs = params.toString();
   return apiFetch<PageResponse<CustomerDto>>(`/api/customers${qs ? `?${qs}` : ""}`);
 }
+
+export const customerKeys = {
+  all: ["customers"] as const,
+  list: (query: CustomerQuery = {}) => ["customers", query] as const,
+};

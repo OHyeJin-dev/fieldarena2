@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { me } from "../api";
+import { me, sessionKeys } from "../api";
 
 export function useMe() {
   return useQuery({
-    queryKey: ["me"],
+    queryKey: sessionKeys.me(),
     queryFn: me,
     retry: false,
   });

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchProposals, type ProposalQuery } from "../api";
+import { proposalKeys, fetchProposals, type ProposalQuery } from "../api";
 
 export function useProposals(query: ProposalQuery = {}) {
   return useQuery({
-    queryKey: ["proposals", query],
+    queryKey: proposalKeys.list(query),
     queryFn: () => fetchProposals(query),
   });
 }

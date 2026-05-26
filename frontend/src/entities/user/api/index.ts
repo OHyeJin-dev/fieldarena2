@@ -28,3 +28,8 @@ export function rejectUser(id: string): Promise<void> {
     method: "PATCH",
   });
 }
+
+export const adminUserKeys = {
+  all: ["admin", "users"] as const,
+  list: (status?: string) => ["admin", "users", status] as const,
+};
